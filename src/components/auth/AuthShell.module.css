@@ -1,0 +1,219 @@
+.page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+}
+
+.shell {
+  width: min(1120px, 100%);
+  min-height: min(720px, calc(100svh - 56px));
+  display: grid;
+  grid-template-columns: minmax(360px, 0.94fr) minmax(430px, 1.06fr);
+  overflow: hidden;
+  border: 1px solid rgba(23, 59, 99, 0.12);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.brandPanel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 54px;
+  color: white;
+  background:
+    linear-gradient(150deg, rgba(244, 122, 34, 0.22), transparent 42%),
+    linear-gradient(145deg, var(--color-navy-700), var(--color-navy-950));
+}
+
+.brandPanel::after {
+  content: "";
+  position: absolute;
+  right: -135px;
+  bottom: -135px;
+  z-index: -1;
+  width: 360px;
+  height: 360px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 44px rgba(255, 255, 255, 0.035),
+    0 0 0 88px rgba(255, 255, 255, 0.025);
+}
+
+.glow {
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  z-index: -1;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: rgba(244, 122, 34, 0.2);
+  filter: blur(2px);
+}
+
+.brandContent {
+  max-width: 390px;
+}
+
+.logoFrame {
+  width: 126px;
+  height: 126px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 34px;
+  padding: 9px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 17px;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: #ffc998;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.brandPanel h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.15rem, 4vw, 3.55rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+
+.description {
+  max-width: 360px;
+  margin: 24px 0 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.motto {
+  margin: 48px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.88rem;
+  font-style: italic;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.formPanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 56px clamp(40px, 6vw, 82px) 32px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.96)),
+    url("/brand/escudo-transparente-de-fondo.png") center / 54% auto no-repeat;
+}
+
+.formWrap {
+  width: min(100%, 440px);
+  margin: auto;
+}
+
+.mobileBrand {
+  display: none;
+}
+
+.phaseNote {
+  width: min(100%, 440px);
+  margin: 28px auto 0;
+  color: #7a8490;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+@media (max-width: 840px) {
+  .page {
+    display: block;
+    padding: 0;
+  }
+
+  .shell {
+    min-height: 100svh;
+    display: block;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .brandPanel {
+    display: none;
+  }
+
+  .formPanel {
+    min-height: 100svh;
+    justify-content: flex-start;
+    padding: 28px clamp(22px, 7vw, 48px) 24px;
+  }
+
+  .mobileBrand {
+    width: min(100%, 440px);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 auto 42px;
+  }
+
+  .mobileBrand img {
+    border: 1px solid var(--color-orange-100);
+    border-radius: 14px;
+    object-fit: cover;
+  }
+
+  .mobileBrand div {
+    display: grid;
+    gap: 3px;
+  }
+
+  .mobileBrand strong {
+    color: var(--color-navy-900);
+    font-size: 1.05rem;
+  }
+
+  .mobileBrand span {
+    color: var(--color-muted);
+    font-size: 0.78rem;
+  }
+
+  .formWrap {
+    margin: 0 auto;
+  }
+
+  .phaseNote {
+    margin-top: auto;
+    padding-top: 38px;
+  }
+}
+
+@media (max-width: 390px) {
+  .formPanel {
+    padding-inline: 18px;
+  }
+}

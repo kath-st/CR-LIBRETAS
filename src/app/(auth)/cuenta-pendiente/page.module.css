@@ -1,0 +1,75 @@
+.content {
+  text-align: center;
+}
+
+.mark {
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 22px;
+  border: 1px solid #b8ddc6;
+  border-radius: 50%;
+  color: var(--color-success);
+  background: var(--color-success-soft);
+  font-size: 1.8rem;
+  font-weight: 850;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--color-orange-700);
+  font-size: 0.73rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.content h1 {
+  margin: 0;
+  color: var(--color-navy-950);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 5vw, 2.65rem);
+  letter-spacing: -0.035em;
+}
+
+.lead {
+  margin: 15px 0 24px;
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+
+.statusCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.statusCard p {
+  margin: 4px 0 0;
+  color: var(--color-muted);
+  font-size: 0.84rem;
+}
+
+.dot {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--color-orange-500);
+  box-shadow: 0 0 0 5px var(--color-orange-100);
+}
+
+.back {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+  color: var(--color-navy-800);
+  font-weight: 800;
+  text-underline-offset: 3px;
+}
