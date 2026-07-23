@@ -33,6 +33,8 @@ test("registro y login convierten el DNI sin mostrar el email interno", async ()
   assert.match(identity, /auth\.cristoredentor\.local/);
   assert.match(login, /signInWithPassword/);
   assert.match(login, /dniToInternalEmail/);
+  assert.match(login, /\.eq\("id", signInData\.user\.id\)/);
+  assert.match(login, /window\.location\.assign\(destination\)/);
   assert.match(register, /auth\.signUp/);
   assert.match(register, /dniToInternalEmail/);
   assert.doesNotMatch(login, /label="Email"/);
@@ -70,4 +72,3 @@ test("la migración obliga docentes activas y enlaza el cambio de contraseña co
   assert.match(sql, /after update of encrypted_password on auth\.users/i);
   assert.match(sql, /must_change_password = false/i);
 });
-

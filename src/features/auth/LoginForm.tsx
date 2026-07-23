@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { Alert, Button, PasswordField, TextField } from "@/components/ui";
 import { authErrorMessage, dniToInternalEmail } from "@/lib/auth/identity";
@@ -13,7 +12,6 @@ import styles from "./AuthForm.module.css";
 type Errors = Partial<Record<"dni" | "password", string>>;
 
 export function LoginForm() {
-  const router = useRouter();
   const [errors, setErrors] = useState<Errors>({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,13 +39,18 @@ export function LoginForm() {
     setErrors({});
     setLoading(true);
     const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: dniToInternalEmail(result.data.dni),
-      password: result.data.password,
-    });
+    const { data: signInData, error: signInError } =
+      await supabase.auth.signInWithPassword({
+        email: dniToInternalEmail(result.data.dni),
+        password: result.data.password,
+      });
 
-    if (signInError) {
-      setFormError(authErrorMessage(signInError.message));
+    if (signInError || !signInData.user) {
+      setFormError(
+        signInError
+          ? authErrorMessage(signInError.message)
+          : "No se pudo iniciar la sesión. Inténtalo nuevamente.",
+      );
       setLoading(false);
       return;
     }
@@ -57,6 +60,7 @@ export function LoginForm() {
       .select(
         "id, dni, nombres, apellidos, role, status, must_change_password",
       )
+      .eq("id", signInData.user.id)
       .single();
 
     if (profileError || !profile) {
@@ -85,8 +89,7 @@ export function LoginForm() {
             ? "/admin"
             : "/grupos";
 
-    router.replace(destination);
-    router.refresh();
+    window.location.assign(destination);
   }
 
   return (
