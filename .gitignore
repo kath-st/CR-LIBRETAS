@@ -36,8 +36,12 @@ yarn-error.log*
 
 # typescript
 /dist/
+*.tsbuildinfo
 /outputs/
 /work/
+
+# Supabase local state
+/supabase/.temp/
 
 # editor and local artifacts
 .vscode/*
