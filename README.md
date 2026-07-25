@@ -51,7 +51,7 @@ dependencias reproducibles están declaradas en `package.json` y
 ## Instalación local
 
 ```bash
-git clone https://github.com/USUARIO/cr-libretas.git
+git clone https://github.com/kath-st/CR-LIBRETAS.git
 cd cr-libretas
 npm ci
 ```
