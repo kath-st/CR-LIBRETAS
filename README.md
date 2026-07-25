@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # CR Libretas
 
 Sistema web de gestión académica y generación de boletas de notas para la
