@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # CR Libretas
 
 Sistema web de gestión académica y generación de boletas de notas para la
@@ -243,3 +244,6 @@ desplegarse automáticamente.
 Los recursos originales de las boletas se conservan en
 `docs/referencias-boleta/` porque el proceso de compilación sincroniza desde
 allí el escudo, sello y firma institucional.
+=======
+# CR-LIBRETAS
+>>>>>>> dede9d98778164b13a5eef9e6ce271bf54eaf7d4
