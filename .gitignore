@@ -46,3 +46,15 @@ yarn-error.log*
 # editor and local artifacts
 .vscode/*
 !.vscode/extensions.json
+
+# generated report cards and temporary validation artifacts
+/output/
+/tmp/
+
+# local Supabase CLI state
+/supabase/.branches/
+
+# local OS and IDE metadata
+.idea/
+Thumbs.db
+Desktop.ini

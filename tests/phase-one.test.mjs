@@ -24,14 +24,17 @@ test("existen las rutas y componentes requeridos", async () => {
   await Promise.all(required.map((file) => access(new URL(file, root))));
 });
 
-test("la aplicación está en español y resuelve el acceso desde la sesión", async () => {
-  const [layout, page] = await Promise.all([
+test("la aplicación está en español y resuelve el acceso en el navegador", async () => {
+  const [layout, page, redirector] = await Promise.all([
     readFile(new URL("src/app/layout.tsx", root), "utf8"),
     readFile(new URL("src/app/page.tsx", root), "utf8"),
+    readFile(new URL("src/features/auth/HomeRedirect.tsx", root), "utf8"),
   ]);
   assert.match(layout, /<html lang="es">/);
-  assert.match(page, /getAccessProfile/);
-  assert.match(page, /redirect\(destinationFor\(profile\)\)/);
+  assert.match(page, /HomeRedirect/);
+  assert.match(redirector, /useAccessProfileMonitor/);
+  assert.match(redirector, /window\.location\.replace\(destinationFor\(profile\)\)/);
+  assert.doesNotMatch(page, /getAccessProfile/);
 });
 
 test("la migración activa RLS y define aislamiento por docente", async () => {

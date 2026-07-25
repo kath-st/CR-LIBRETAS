@@ -12,9 +12,14 @@ test("la Fase 2 incluye todas sus rutas y acciones", async () => {
     "src/app/(dashboard)/grupos/page.tsx",
     "src/app/(auth)/cambiar-contrasena/page.tsx",
     "src/app/(auth)/cuenta-inactiva/page.tsx",
-    "src/features/admin/teacher-actions.ts",
-    "src/features/admin/group-actions.ts",
-    "src/lib/auth/session.ts",
+    "src/app/api/admin/teachers/[id]/route.ts",
+    "src/features/admin/AdminOverview.tsx",
+    "src/features/admin/TeachersAdmin.tsx",
+    "src/features/admin/GroupsAdmin.tsx",
+    "src/features/auth/PendingAccount.tsx",
+    "src/features/auth/useAccessProfileMonitor.ts",
+    "src/features/groups/MyGroups.tsx",
+    "src/components/dashboard/DashboardSessionBoundary.tsx",
     "src/lib/supabase/admin.ts",
     "supabase/migrations/20260723000200_phase_2_auth_admin.sql",
     "supabase/tests/database/002_phase_2_auth_admin.test.sql",
@@ -23,38 +28,93 @@ test("la Fase 2 incluye todas sus rutas y acciones", async () => {
   await Promise.all(required.map((file) => access(new URL(file, root))));
 });
 
+test("el panel carga datos en el navegador sin bloquear la navegación", async () => {
+  const [overview, teachers, groups, myGroups, boundary, adminPage] =
+    await Promise.all([
+      readFile(new URL("src/features/admin/AdminOverview.tsx", root), "utf8"),
+      readFile(new URL("src/features/admin/TeachersAdmin.tsx", root), "utf8"),
+      readFile(new URL("src/features/admin/GroupsAdmin.tsx", root), "utf8"),
+      readFile(new URL("src/features/groups/MyGroups.tsx", root), "utf8"),
+      readFile(
+        new URL(
+          "src/components/dashboard/DashboardSessionBoundary.tsx",
+          root,
+        ),
+        "utf8",
+      ),
+      readFile(new URL("src/app/(dashboard)/admin/page.tsx", root), "utf8"),
+    ]);
+
+  for (const clientView of [overview, teachers, groups, myGroups, boundary]) {
+    assert.match(clientView, /"use client"/);
+    assert.match(clientView, /createClient/);
+  }
+  assert.doesNotMatch(adminPage, /createDataClient/);
+  assert.doesNotMatch(adminPage, /requireAdmin/);
+});
+
 test("registro y login convierten el DNI sin mostrar el email interno", async () => {
-  const [identity, login, register] = await Promise.all([
+  const [identity, login, register, monitor] = await Promise.all([
     readFile(new URL("src/lib/auth/identity.ts", root), "utf8"),
     readFile(new URL("src/features/auth/LoginForm.tsx", root), "utf8"),
     readFile(new URL("src/features/auth/RegisterForm.tsx", root), "utf8"),
+    readFile(
+      new URL("src/features/auth/useAccessProfileMonitor.ts", root),
+      "utf8",
+    ),
   ]);
 
+  assert.match(identity, /usuarios\.cristoredentor\.edu\.pe/);
   assert.match(identity, /auth\.cristoredentor\.local/);
   assert.match(login, /signInWithPassword/);
-  assert.match(login, /dniToInternalEmail/);
-  assert.match(login, /\.eq\("id", signInData\.user\.id\)/);
-  assert.match(login, /window\.location\.assign\(destination\)/);
+  assert.match(login, /internalEmailsForDni/);
+  assert.match(login, /\.eq\("id", signedInUserId\)/);
+  assert.match(login, /window\.location\.href = destination/);
+  assert.match(monitor, /auth\.getSession/);
+  assert.match(monitor, /\.eq\("id", session\.user\.id\)/);
   assert.match(register, /auth\.signUp/);
   assert.match(register, /dniToInternalEmail/);
   assert.doesNotMatch(login, /label="Email"/);
   assert.doesNotMatch(register, /label="Email"/);
 });
 
-test("las acciones administrativas validan rol y mantienen la clave privada en servidor", async () => {
-  const [teachers, groups, adminClient] = await Promise.all([
-    readFile(new URL("src/features/admin/teacher-actions.ts", root), "utf8"),
-    readFile(new URL("src/features/admin/group-actions.ts", root), "utf8"),
+test("las mutaciones usan RLS y reservan la clave privada para el API autenticado", async () => {
+  const [teachers, groups, api, adminClient] = await Promise.all([
+    readFile(new URL("src/features/admin/TeachersAdmin.tsx", root), "utf8"),
+    readFile(new URL("src/features/admin/GroupsAdmin.tsx", root), "utf8"),
+    readFile(
+      new URL("src/app/api/admin/teachers/[id]/route.ts", root),
+      "utf8",
+    ),
     readFile(new URL("src/lib/supabase/admin.ts", root), "utf8"),
   ]);
 
-  assert.match(teachers, /requireAdmin/);
-  assert.match(teachers, /updateUserById/);
-  assert.doesNotMatch(teachers, /deleteUser/);
-  assert.match(groups, /requireAdmin/);
+  assert.match(teachers, /\.from\("profiles"\)/);
+  assert.match(teachers, /\.update\(\{ status: nextStatus \}\)/);
+  assert.match(groups, /\.from\("academic_groups"\)/);
+  assert.match(api, /authorization/);
+  assert.match(api, /isActiveAdmin/);
+  assert.match(api, /updateUserById/);
+  assert.doesNotMatch(teachers, /SUPABASE_SECRET_KEY/);
+  assert.doesNotMatch(groups, /SUPABASE_SECRET_KEY/);
   assert.match(adminClient, /import "server-only"/);
   assert.match(adminClient, /SUPABASE_SECRET_KEY/);
   assert.doesNotMatch(adminClient, /NEXT_PUBLIC_SUPABASE_SECRET_KEY/);
+});
+
+test("la cuenta pendiente detecta la aprobación sin recargar manualmente", async () => {
+  const [pending, monitor] = await Promise.all([
+    readFile(new URL("src/features/auth/PendingAccount.tsx", root), "utf8"),
+    readFile(
+      new URL("src/features/auth/useAccessProfileMonitor.ts", root),
+      "utf8",
+    ),
+  ]);
+
+  assert.match(pending, /useAccessProfileMonitor/);
+  assert.match(pending, /destinationFor\(profile\)/);
+  assert.match(monitor, /setInterval\(checkProfile, intervalMs\)/);
+  assert.match(monitor, /\.eq\("id", session\.user\.id\)/);
 });
 
 test("la migración obliga docentes activas y enlaza el cambio de contraseña con Auth", async () => {

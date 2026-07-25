@@ -3,8 +3,16 @@
 import Link from "next/link";
 import { useRef, useState, type FormEvent } from "react";
 import { Alert, Button, PasswordField, TextField } from "@/components/ui";
-import { authErrorMessage, dniToInternalEmail } from "@/lib/auth/identity";
-import type { AccessProfile } from "@/lib/auth/session";
+import {
+  ACCESS_PROFILE_COLUMNS,
+  ACCESS_PROFILE_STORAGE_KEY,
+  accessProfileSchema,
+  destinationFor,
+} from "@/lib/auth/access";
+import {
+  authErrorMessage,
+  internalEmailsForDni,
+} from "@/lib/auth/identity";
 import { createClient } from "@/lib/supabase/client";
 import { issuesByField, loginSchema } from "./schemas";
 import styles from "./AuthForm.module.css";
@@ -38,58 +46,108 @@ export function LoginForm() {
 
     setErrors({});
     setLoading(true);
-    const supabase = createClient();
-    const { data: signInData, error: signInError } =
-      await supabase.auth.signInWithPassword({
-        email: dniToInternalEmail(result.data.dni),
-        password: result.data.password,
+
+    try {
+      const supabase = createClient();
+      let signedInUserId: string | null = null;
+      let signInError: {
+        code?: string;
+        message: string;
+        status?: number;
+      } | null = null;
+
+      for (const email of internalEmailsForDni(result.data.dni)) {
+        const attempt = await supabase.auth.signInWithPassword({
+          email,
+          password: result.data.password,
+        });
+        if (attempt.data.user) {
+          signedInUserId = attempt.data.user.id;
+          signInError = null;
+          break;
+        }
+
+        signInError = attempt.error;
+        const canTryLegacy =
+          attempt.error?.code === "invalid_credentials" ||
+          attempt.error?.message.toLowerCase().includes("invalid login");
+        if (!canTryLegacy) break;
+      }
+
+      if (signInError || !signedInUserId) {
+        console.error("[auth/login] Supabase rechazó el inicio de sesión", {
+          code: signInError?.code,
+          status: signInError?.status,
+        });
+        setFormError(
+          signInError
+            ? authErrorMessage(signInError.message, signInError.code)
+            : "No se pudo iniciar la sesión. Inténtalo nuevamente.",
+        );
+        return;
+      }
+
+      const { data: rawProfile, error: profileError } = await supabase
+        .from("profiles")
+        .select(ACCESS_PROFILE_COLUMNS)
+        .eq("id", signedInUserId)
+        .maybeSingle();
+
+      if (profileError || !rawProfile) {
+        console.error("[auth/login] No se pudo cargar el perfil", {
+          code: profileError?.code,
+          hint: profileError?.hint,
+          profileFound: Boolean(rawProfile),
+        });
+        setFormError(
+          profileError
+            ? "Supabase no permitió consultar el perfil. Revisa las políticas RLS de profiles."
+            : "No se encontró el perfil asociado a esta cuenta.",
+        );
+        void supabase.auth.signOut({ scope: "local" });
+        return;
+      }
+
+      const parsedProfile = accessProfileSchema.safeParse(rawProfile);
+      if (!parsedProfile.success) {
+        console.error("[auth/login] El perfil contiene valores no reconocidos", {
+          fields: parsedProfile.error.issues.map((issue) =>
+            issue.path.join("."),
+          ),
+        });
+        setFormError(
+          `El perfil contiene campos inválidos: ${parsedProfile.error.issues
+            .map((issue) => issue.path.join("."))
+            .join(", ")}.`,
+        );
+        void supabase.auth.signOut({ scope: "local" });
+        return;
+      }
+
+      if (parsedProfile.data.status === "inactivo") {
+        setFormError(
+          "Esta cuenta está inactiva. Comunícate con la directora para solicitar acceso.",
+        );
+        void supabase.auth.signOut({ scope: "local" });
+        return;
+      }
+
+      const destination = destinationFor(parsedProfile.data);
+      window.sessionStorage.setItem(
+        ACCESS_PROFILE_STORAGE_KEY,
+        JSON.stringify(parsedProfile.data),
+      );
+      window.location.href = destination;
+    } catch (error) {
+      console.error("[auth/login] Fallo inesperado en el navegador", {
+        name: error instanceof Error ? error.name : "UnknownError",
       });
-
-    if (signInError || !signInData.user) {
       setFormError(
-        signInError
-          ? authErrorMessage(signInError.message)
-          : "No se pudo iniciar la sesión. Inténtalo nuevamente.",
+        "No se pudo conectar con Supabase. Verifica tu conexión e inténtalo nuevamente.",
       );
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select(
-        "id, dni, nombres, apellidos, role, status, must_change_password",
-      )
-      .eq("id", signInData.user.id)
-      .single();
-
-    if (profileError || !profile) {
-      await supabase.auth.signOut();
-      setFormError("No se encontró el perfil asociado a esta cuenta.");
-      setLoading(false);
-      return;
-    }
-
-    const access = profile as AccessProfile;
-    if (access.status === "inactivo") {
-      await supabase.auth.signOut();
-      setFormError(
-        "Esta cuenta está inactiva. Comunícate con la directora para solicitar acceso.",
-      );
-      setLoading(false);
-      return;
-    }
-
-    const destination =
-      access.status === "pendiente"
-        ? "/cuenta-pendiente"
-        : access.must_change_password
-          ? "/cambiar-contrasena"
-          : access.role === "admin"
-            ? "/admin"
-            : "/grupos";
-
-    window.location.assign(destination);
   }
 
   return (
@@ -114,9 +172,13 @@ export function LoginForm() {
           label="DNI"
           maxLength={8}
           name="dni"
-          onChange={() => errors.dni && setErrors((value) => ({ ...value, dni: undefined }))}
+          onChange={() =>
+            errors.dni &&
+            setErrors((current) => ({ ...current, dni: undefined }))
+          }
           placeholder="8 dígitos"
           ref={dniRef}
+          required
         />
         <PasswordField
           autoComplete="current-password"
@@ -125,10 +187,11 @@ export function LoginForm() {
           name="password"
           onChange={() =>
             errors.password &&
-            setErrors((value) => ({ ...value, password: undefined }))
+            setErrors((current) => ({ ...current, password: undefined }))
           }
           placeholder="Ingresa tu contraseña"
           ref={passwordRef}
+          required
         />
         <Button fullWidth loading={loading} type="submit">
           Ingresar

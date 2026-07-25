@@ -232,6 +232,9 @@
 .button,
 .buttonSecondary,
 .buttonDanger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 42px;
   padding: 0 15px;
   border: 1px solid transparent;
@@ -239,6 +242,7 @@
   cursor: pointer;
   font-size: 0.78rem;
   font-weight: 800;
+  text-decoration: none;
 }
 
 .button {
@@ -290,4 +294,3 @@
     grid-template-columns: 1fr;
   }
 }
-

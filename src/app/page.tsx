@@ -1,7 +1,5 @@
-import { redirect } from "next/navigation";
-import { destinationFor, getAccessProfile } from "@/lib/auth/session";
+import { HomeRedirect } from "@/features/auth/HomeRedirect";
 
-export default async function HomePage() {
-  const profile = await getAccessProfile();
-  redirect(destinationFor(profile));
+export default function HomePage() {
+  return <HomeRedirect />;
 }

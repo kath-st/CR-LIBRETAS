@@ -1,0 +1,374 @@
+.page {
+  display: grid;
+  gap: 22px;
+}
+
+.heading,
+.restorePanel > header,
+.history > header,
+.historyList article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--color-orange-700);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.heading h2 {
+  margin: 0;
+  color: var(--color-navy-950);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.9rem, 3.5vw, 2.65rem);
+  letter-spacing: -0.03em;
+}
+
+.heading p:last-child,
+.card p,
+.restorePanel header p:last-child {
+  margin: 7px 0 0;
+  color: var(--color-muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.integrity,
+.validBadge {
+  flex: 0 0 auto;
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: var(--color-success);
+  background: var(--color-success-soft);
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.notice {
+  margin: 0;
+  padding: 13px 15px;
+  border: 1px solid #b7dec7;
+  border-radius: 10px;
+  color: var(--color-success);
+  background: var(--color-success-soft);
+  font-size: 0.82rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card,
+.restorePanel,
+.history {
+  border: 1px solid #dfe5eb;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 10px 30px rgba(13, 34, 56, 0.05);
+}
+
+.card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  padding: 21px;
+}
+
+.card h3,
+.restorePanel h3,
+.history h3 {
+  margin: 0;
+  color: var(--color-navy-950);
+  font-size: 1rem;
+}
+
+.cardNumber {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 10px;
+  color: white;
+  background: var(--color-navy-800);
+  font-weight: 850;
+}
+
+.card:nth-child(2) .cardNumber {
+  background: var(--color-orange-600);
+}
+
+.primaryButton,
+.secondaryButton,
+.dangerButton,
+.fileButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.primaryButton,
+.fileButton {
+  grid-column: 1 / -1;
+  color: white;
+  background: var(--color-navy-800);
+}
+
+.fileButton {
+  position: relative;
+  background: var(--color-orange-600);
+}
+
+.fileButton input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.secondaryButton {
+  border-color: var(--color-border);
+  color: var(--color-navy-800);
+  background: white;
+}
+
+.dangerButton {
+  color: white;
+  background: var(--color-danger);
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled,
+.dangerButton:disabled,
+.fileButton:has(input:disabled) {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.restorePanel {
+  padding: 22px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.stats div {
+  padding: 13px;
+  border-radius: 10px;
+  background: #f4f7fa;
+}
+
+.stats span,
+.stats strong {
+  display: block;
+}
+
+.stats span {
+  color: var(--color-muted);
+  font-size: 0.69rem;
+  font-weight: 750;
+}
+
+.stats strong {
+  margin-top: 5px;
+  color: var(--color-navy-950);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.3rem;
+}
+
+.restoreForm {
+  display: grid;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.modeSelector {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.modeSelector legend {
+  grid-column: 1 / -1;
+  margin-bottom: 9px;
+  color: var(--color-navy-950);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.modeSelector label {
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.modeSelector input {
+  margin-top: 3px;
+}
+
+.modeSelector strong,
+.modeSelector small {
+  display: block;
+}
+
+.modeSelector strong {
+  color: var(--color-navy-900);
+  font-size: 0.8rem;
+}
+
+.modeSelector small {
+  margin-top: 4px;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.newGroupFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f6f8fa;
+}
+
+.newGroupFields label,
+.confirmation label {
+  display: grid;
+  gap: 6px;
+  color: var(--color-navy-950);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.newGroupFields input,
+.newGroupFields select,
+.confirmation input {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: white;
+}
+
+.fullField {
+  grid-column: 1 / -1;
+}
+
+.confirmation {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #efc0bc;
+  border-radius: 12px;
+  background: var(--color-danger-soft);
+}
+
+.history {
+  padding: 20px;
+}
+
+.textButton {
+  border: 0;
+  color: var(--color-navy-800);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.historyList {
+  display: grid;
+  margin-top: 14px;
+  border-top: 1px solid #edf0f3;
+}
+
+.historyList article {
+  padding: 13px 0;
+  border-bottom: 1px solid #edf0f3;
+}
+
+.historyList strong,
+.historyList span,
+.historyList small {
+  display: block;
+}
+
+.historyList strong {
+  color: var(--color-navy-950);
+  font-size: 0.8rem;
+}
+
+.historyList span,
+.historyList small {
+  margin-top: 4px;
+  color: var(--color-muted);
+  font-size: 0.71rem;
+}
+
+.empty {
+  margin: 14px 0 0;
+  padding: 24px;
+  border: 1px dashed #c5ced8;
+  border-radius: 12px;
+  color: var(--color-muted);
+  background: #fafbfd;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .grid,
+  .modeSelector {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .heading,
+  .restorePanel > header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .newGroupFields,
+  .confirmation {
+    grid-template-columns: 1fr;
+  }
+
+  .fullField {
+    grid-column: auto;
+  }
+}

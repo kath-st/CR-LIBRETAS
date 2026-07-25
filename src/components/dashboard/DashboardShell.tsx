@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
-import type { ReactNode } from "react";
-import { logoutAction } from "@/features/auth/actions";
-import type { AccessProfile } from "@/lib/auth/session";
+import { useState, type ReactNode } from "react";
+import {
+  ACCESS_PROFILE_STORAGE_KEY,
+  type AccessProfile,
+} from "@/lib/auth/access";
+import { createClient } from "@/lib/supabase/client";
 import styles from "./DashboardShell.module.css";
 
 export function DashboardShell({
@@ -9,6 +14,18 @@ export function DashboardShell({
   profile,
 }: Readonly<{ children: ReactNode; profile: AccessProfile }>) {
   const isAdmin = profile.role === "admin";
+  const [closing, setClosing] = useState(false);
+
+  async function logout() {
+    setClosing(true);
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } finally {
+      window.sessionStorage.removeItem(ACCESS_PROFILE_STORAGE_KEY);
+      window.location.replace("/login");
+    }
+  }
 
   return (
     <div className={styles.app}>
@@ -52,15 +69,17 @@ export function DashboardShell({
               {profile.nombres} {profile.apellidos}
             </strong>
           </div>
-          <form action={logoutAction}>
-            <button className={styles.logout} type="submit">
-              Cerrar sesión
-            </button>
-          </form>
+          <button
+            className={styles.logout}
+            disabled={closing}
+            onClick={logout}
+            type="button"
+          >
+            {closing ? "Cerrando…" : "Cerrar sesión"}
+          </button>
         </header>
         <main className={styles.content}>{children}</main>
       </div>
     </div>
   );
 }
-

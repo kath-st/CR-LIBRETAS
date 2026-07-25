@@ -199,7 +199,16 @@ export default function ReportCardPreviewPage() {
             <span>FIRMA DE LA TUTORA</span>
           </div>
           <div className={styles.seal}>
-            <img alt="Sello institucional" src="/brand/sello-institucional.png" />
+            <img
+              alt="Sello institucional"
+              className={styles.sealImage}
+              src="/brand/sello-institucional.png"
+            />
+            <img
+              alt="Firma de la directora"
+              className={styles.directorSignature}
+              src="/brand/firma-directora.png"
+            />
           </div>
           <div className={styles.final}>
             <span>PROMEDIO FINAL</span>

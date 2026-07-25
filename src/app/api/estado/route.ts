@@ -6,7 +6,8 @@ export const runtime = "nodejs";
 export function GET() {
   return NextResponse.json({
     app: "CR Libretas",
-    phase: 1,
+    status: "ok",
+    phase: 6,
     supabaseConfigured: hasSupabaseConfig(),
   });
 }

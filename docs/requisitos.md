@@ -166,7 +166,7 @@ El DNI se guardará como texto, tendrá ocho dígitos, será único y será el i
 El sistema convertirá el DNI a un email sintético que no se mostrará en la interfaz. Ejemplo:
 
 ```text
-12345678@auth.cristoredentor.local
+12345678@usuarios.cristoredentor.edu.pe
 ```
 
 #### RF-AUT-004. Contraseña
@@ -859,7 +859,7 @@ Cada fase incluye frontend, backend y validación. No se avanzará a la siguient
 - Una docente puede registrarse, quedar pendiente, ser aprobada e iniciar sesión.
 - Cada rol llega a su panel correspondiente.
 
-### Fase 3. Paneles, docentes y grupos
+### Fase 2B. Paneles, docentes y grupos — completada
 
 **Frontend:**
 
@@ -882,7 +882,12 @@ Cada fase incluye frontend, backend y validación. No se avanzará a la siguient
 - La docente solo ve esos grupos.
 - Cambiar de URL a un grupo ajeno devuelve acceso denegado.
 
-### Fase 4. Alumnos y matrículas
+### Fase 3. Flujo académico básico
+
+Esta fase consolida alumnos, matrículas, malla, notas, cálculos y
+recomendaciones para que cada entrega termine con una libreta utilizable.
+
+#### 3.1. Alumnos y matrículas
 
 **Frontend:**
 
@@ -906,7 +911,7 @@ Cada fase incluye frontend, backend y validación. No se avanzará a la siguient
 - Un alumno con historial no puede eliminarse.
 - Retiro y reactivación conservan la información.
 
-### Fase 5. Malla académica
+#### 3.2. Malla académica
 
 **Frontend:**
 
@@ -927,7 +932,7 @@ Cada fase incluye frontend, backend y validación. No se avanzará a la siguient
 - Conducta puede participar o no en el promedio.
 - Las áreas directas se representan correctamente.
 
-### Fase 6. Notas y cálculos
+#### 3.3. Notas y cálculos
 
 **Frontend:**
 
@@ -955,26 +960,24 @@ Cada fase incluye frontend, backend y validación. No se avanzará a la siguient
 - Las notas persisten al cerrar y volver a entrar.
 - Interfaz y pruebas producen los mismos resultados.
 
-### Fase 7. Recomendaciones y mérito
+#### 3.4. Recomendaciones
 
 **Frontend:**
 
 - Selector de alumno y bimestre.
 - Campo con contador de caracteres.
-- Resultado de mérito por bimestre.
 
 **Backend y datos:**
 
 - Recomendaciones por matrícula/bimestre.
-- Cálculo de mérito con ranking denso.
 - Exclusión de retirados en periodos posteriores.
 
 **Terminado cuando:**
 
 - Las recomendaciones se guardan por bimestre.
-- Los empates y retiros producen puestos correctos.
+- Los retiros posteriores no permiten crear recomendaciones nuevas.
 
-### Fase 8. Vista previa y PDF
+### Fase 4. Vista previa y PDF
 
 **Frontend:**
 
@@ -996,7 +999,7 @@ Cada fase incluye frontend, backend y validación. No se avanzará a la siguient
 - Un grupo de 30 alumnos genera 30 páginas.
 - La descarga y el historial funcionan.
 
-### Fase 9. Importaciones y respaldos
+### Fase 5. Importaciones y respaldos
 
 **Frontend:**
 
@@ -1017,7 +1020,7 @@ Cada fase incluye frontend, backend y validación. No se avanzará a la siguient
 - Una importación inválida no deja datos parciales.
 - Un respaldo exportado puede restaurarse y recalcularse.
 
-### Fase 10. Seguridad, calidad y despliegue
+### Fase 6. Seguridad, calidad y despliegue
 
 **Frontend:**
 
@@ -1166,71 +1169,38 @@ Supabase.
 ### Encargo de la Fase 3
 
 ```text
-Implementa solamente la Fase 3 del documento: panel administrativo de docentes,
-creación/asignación de grupos y panel docente con tarjetas de sus grupos. Construye
-interfaz, Route Handlers, migraciones, RLS y pruebas como un solo flujo. El grupo
-seleccionado debe aparecer en la URL y cabecera. Demuestra con pruebas que una
-docente no puede acceder a un grupo ajeno. No avances a alumnos ni notas.
+Implementa solamente la Fase 3: flujo académico básico. Incluye registro manual
+de alumnos, matrículas, retiro y reactivación, malla independiente por grupo,
+notas de cuatro bimestres, cálculos sin redondeos intermedios y recomendaciones
+por alumno/bimestre. Respeta NULL como vacío, cero como nota válida, enteros de
+0 a 20 y un máximo de 300 caracteres. Añade migración, catálogo inicial, RLS,
+integridad entre grupos, autoguardado versionado, interfaz y pruebas. No avances
+a importaciones, PDF ni respaldos.
 ```
 
 ### Encargo de la Fase 4
 
 ```text
-Implementa solamente la Fase 4: alumnos y matrículas. Incluye lista, filtros,
-registro manual, edición, eliminación segura, retiro y reactivación; además de sus
-tablas, constraints, Route Handlers, RLS y pruebas. No implementes todavía la
-importación XLSX/CSV. Verifica que los grupos no mezclen alumnos.
+Implementa solamente la Fase 4: vista previa, orden de mérito y generación de
+PDF. Reutiliza una única plantilla de datos y estilos. Usa valores internos para
+el mérito, ranking denso, una página A4 vertical por alumno y almacenamiento
+privado e inmutable. Prueba el caso de máximo contenido y un grupo de 30 alumnos.
+No leas datos desde PDF.
 ```
 
 ### Encargo de la Fase 5
 
 ```text
-Implementa solamente la Fase 5: catálogo base y malla independiente por grupo.
-Incluye interfaz para activar, desactivar, ordenar y agregar asignaturas, control de
-inclusión en el promedio, seeds, migraciones, RLS y pruebas. Modela las áreas
-directas mediante una asignatura interna única. No avances a notas.
+Implementa solamente la Fase 5: importación XLSX/CSV con vista previa y
+confirmación, exportación JSON y restauración validada y transaccional. Ningún
+error debe dejar datos parciales. El respaldo tendrá versión y los promedios se
+recalcularán desde las notas.
 ```
 
 ### Encargo de la Fase 6
 
 ```text
-Implementa solamente la Fase 6: tabla de notas, autoguardado y módulo único de
-cálculos. Respeta NULL como nota vacía, cero como nota válida y enteros de 0 a 20.
-Evita que respuestas antiguas sobrescriban cambios recientes. Añade pruebas
-exhaustivas para todos los cálculos y redondeos. No avances a PDF.
-```
-
-### Encargo de la Fase 7
-
-```text
-Implementa solamente la Fase 7: recomendaciones por alumno/bimestre y orden de
-mérito bimestral. Usa valores internos sin redondear, ranking denso y exclusión de
-retirados en periodos posteriores. Añade interfaz, almacenamiento, validaciones y
-pruebas.
-```
-
-### Encargo de la Fase 8
-
-```text
-Implementa solamente la Fase 8: vista previa y generación de PDF. Reutiliza una
-única plantilla de datos y estilos. Usa Playwright con Chromium en runtime Node.js,
-una página A4 vertical por alumno y almacenamiento privado e inmutable. Prueba el
-caso de máximo contenido y un grupo de 30 alumnos. No leas datos desde PDF.
-```
-
-### Encargo de la Fase 9
-
-```text
-Implementa solamente la Fase 9: importación XLSX/CSV con vista previa y confirmación,
-exportación JSON y restauración validada y transaccional. Ningún error debe dejar
-datos parciales. El respaldo tendrá versión y los promedios se recalcularán desde
-las notas.
-```
-
-### Encargo de la Fase 10
-
-```text
-Ejecuta solamente la Fase 10: revisión integral de seguridad, RLS, accesibilidad,
+Ejecuta solamente la Fase 6: revisión integral de seguridad, RLS, accesibilidad,
 experiencia de usuario, rendimiento, PDF en el entorno objetivo y preparación de
 despliegue. No agregues nuevas funciones. Corrige únicamente defectos que impidan
 cumplir los RF, RN, RNF y criterios de aceptación del documento.

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { Button, PasswordField, TextField } from "@/components/ui";
 import { Alert } from "@/components/ui";
@@ -19,7 +18,6 @@ type Field =
 type Errors = Partial<Record<Field, string>>;
 
 export function RegisterForm() {
-  const router = useRouter();
   const [errors, setErrors] = useState<Errors>({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -65,7 +63,7 @@ export function RegisterForm() {
     setErrors({});
     setLoading(true);
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: dniToInternalEmail(result.data.dni),
       password: result.data.password,
       options: {
@@ -78,13 +76,32 @@ export function RegisterForm() {
     });
 
     if (error) {
-      setFormError(authErrorMessage(error.message));
+      console.error("[auth/register] Supabase rechazó el registro", {
+        code: error.code,
+        status: error.status,
+      });
+      setFormError(authErrorMessage(error.message, error.code));
       setLoading(false);
       return;
     }
 
-    router.replace("/cuenta-pendiente");
-    router.refresh();
+    if (!data.user) {
+      setFormError(
+        "Supabase no devolvió la cuenta creada. Inténtalo nuevamente.",
+      );
+      setLoading(false);
+      return;
+    }
+
+    if (!data.session) {
+      setFormError(
+        "La cuenta fue creada, pero Supabase exige confirmar el correo. Desactiva Confirm Email en Authentication → Providers → Email.",
+      );
+      setLoading(false);
+      return;
+    }
+
+    window.location.href = "/cuenta-pendiente";
   }
 
   return (

@@ -274,15 +274,28 @@
 }
 
 .seal {
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .seal img {
-  width: 22mm;
-  height: 22mm;
+  display: block;
   object-fit: contain;
   mix-blend-mode: multiply;
+}
+
+.sealImage {
+  width: 24mm;
+  height: 24mm;
+}
+
+.directorSignature {
+  width: 31mm;
+  height: 9mm;
+  margin-top: -4mm;
 }
 
 .final {
@@ -296,6 +309,10 @@
   border-bottom: 0.3mm solid #000;
   font-size: 5.2pt;
   font-weight: 700;
+}
+
+.final span:nth-of-type(2) {
+  border-top: 0.3mm solid #000;
 }
 
 .final strong {
