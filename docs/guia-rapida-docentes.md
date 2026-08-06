@@ -62,7 +62,20 @@ limpia primero todo el bimestre de cada grupo detectado, por lo que debe usarse
 solo con una plantilla completa. El sistema crea un respaldo automático antes
 de reemplazar información.
 
-## 5. Escribir recomendaciones
+## 5. Consultar el orden de mérito
+
+En **Mérito**:
+
+1. selecciona el bimestre que deseas revisar;
+2. consulta el puesto, promedio y cantidad de notas de cada alumno;
+3. completa las notas pendientes cuando un resultado aparezca como provisional.
+
+El orden utiliza únicamente las notas del bimestre seleccionado. Los empates
+exactos comparten puesto (`1, 2, 2, 3`) y los alumnos retirados dejan de
+participar después de su bimestre de retiro. Un alumno con notas incompletas
+puede aparecer en el ranking, pero su puesto se identifica como provisional.
+
+## 6. Escribir recomendaciones
 
 En **Recomendaciones**:
 
@@ -79,7 +92,7 @@ existente sin confirmación. Si faltan notas, deberás confirmar que comprendes
 que el promedio y el puesto son provisionales. Cada bimestre conserva su propio
 texto de hasta 300 caracteres.
 
-## 6. Generar boletas
+## 7. Generar boletas
 
 En **Boletas**:
 
@@ -90,7 +103,7 @@ En **Boletas**:
 
 Los PDFs históricos no cambian aunque después se editen notas.
 
-## 7. Crear un respaldo
+## 8. Crear un respaldo
 
 En **Respaldos**, descarga un JSON antes de cambios importantes. Para restaurar:
 
@@ -102,7 +115,7 @@ En **Respaldos**, descarga un JSON antes de cambios importantes. Para restaurar:
 Al restaurar el mismo grupo o reemplazar notas mediante una importación se
 guarda automáticamente su estado anterior.
 
-## 8. Si algo falla
+## 9. Si algo falla
 
 - No presiones repetidamente el mismo botón mientras diga **Guardando**.
 - Lee el mensaje rojo completo.

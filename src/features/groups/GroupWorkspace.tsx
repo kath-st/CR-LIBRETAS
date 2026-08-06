@@ -94,6 +94,7 @@ export function GroupWorkspace({
     { href: `${base}/alumnos`, label: "Alumnos" },
     { href: `${base}/malla`, label: "Malla" },
     { href: `${base}/notas`, label: "Notas" },
+    { href: `${base}/merito`, label: "Mérito" },
     { href: `${base}/recomendaciones`, label: "Recomendaciones" },
     { href: `${base}/boletas`, label: "Boletas" },
     { href: `${base}/respaldos`, label: "Respaldos" },

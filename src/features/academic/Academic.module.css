@@ -630,6 +630,140 @@
   color: var(--color-danger);
 }
 
+.meritTermField {
+  flex: 0 0 220px;
+}
+
+.meritSnapshot {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid #dfe5eb;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 10px 30px rgba(13, 34, 56, 0.05);
+}
+
+.meritSnapshot div {
+  display: grid;
+  gap: 7px;
+  padding: 18px;
+  border-right: 1px solid #dfe5eb;
+  text-align: center;
+}
+
+.meritSnapshot div:last-child {
+  border-right: 0;
+}
+
+.meritSnapshot span {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.meritSnapshot strong {
+  color: var(--color-navy-950);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.55rem;
+}
+
+.meritTable {
+  min-width: 790px;
+}
+
+.meritTable th:first-child,
+.meritTable td:first-child {
+  min-width: 92px;
+  text-align: center;
+}
+
+.meritTable th:nth-child(2),
+.meritTable td:nth-child(2) {
+  min-width: 280px;
+  text-align: left;
+}
+
+.meritTable td {
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
+
+.meritTable .meritFirstPlace td {
+  background: #fff8e8;
+}
+
+.meritRank {
+  display: inline-grid;
+  width: 42px;
+  height: 34px;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--color-navy-950);
+  background: #eef3f8;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+}
+
+.meritFirstPlace .meritRank {
+  color: #7d500d;
+  background: #ffe6ad;
+}
+
+.meritAverage {
+  color: var(--color-navy-950);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.05rem;
+  font-weight: 850;
+}
+
+.meritStudentNote {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-muted);
+  font-size: 0.69rem;
+  font-weight: 600;
+}
+
+.meritComplete,
+.meritPending,
+.meritProvisional {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.meritComplete {
+  color: var(--color-success);
+  background: var(--color-success-soft);
+}
+
+.meritPending {
+  color: var(--color-muted);
+  background: #eef3f8;
+}
+
+.meritProvisional {
+  color: #8b580d;
+  background: #fff1cf;
+}
+
+.meritFootnotes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 18px;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.meritFootnotes p {
+  margin: 0;
+}
+
 @media (max-width: 760px) {
   .toolbar {
     align-items: stretch;
@@ -1084,6 +1218,18 @@
   .importOptions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .meritSnapshot {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .meritSnapshot div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .meritSnapshot div:nth-child(-n + 2) {
+    border-bottom: 1px solid #dfe5eb;
+  }
 }
 
 @media (max-width: 720px) {
@@ -1127,6 +1273,20 @@
   }
 
   .academicSnapshot div:last-child {
+    border-bottom: 0;
+  }
+
+  .meritSnapshot {
+    grid-template-columns: 1fr;
+  }
+
+  .meritSnapshot div,
+  .meritSnapshot div:nth-child(2) {
+    border-right: 0;
+    border-bottom: 1px solid #dfe5eb;
+  }
+
+  .meritSnapshot div:last-child {
     border-bottom: 0;
   }
 
