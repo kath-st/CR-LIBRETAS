@@ -20,7 +20,7 @@ importaciones y respaldos.
 - recomendaciones asistidas y editables;
 - vista previa A4 y PDF individual, por selección o grupal;
 - almacenamiento privado e inmutable de boletas;
-- importación XLSX y CSV con detección de duplicados;
+- importación de alumnos y notas desde XLSX/CSV, con vista previa para uno o varios grupos;
 - exportación JSON y restauración transaccional;
 - aislamiento entre grupos mediante Row Level Security de Supabase.
 

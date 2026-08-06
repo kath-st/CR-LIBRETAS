@@ -889,6 +889,64 @@
   gap: 14px;
 }
 
+.gradeImportPanel {
+  display: grid;
+  gap: 16px;
+}
+
+.gradeImportPanel .importPreview {
+  margin-top: 0;
+}
+
+.importOptions {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.8fr) minmax(260px, 1.2fr) minmax(240px, 1fr) auto;
+  align-items: end;
+  gap: 13px;
+  padding: 15px;
+  border: 1px solid #e2e7ec;
+  border-radius: 11px;
+  background: #f7f9fb;
+}
+
+.importCheckbox {
+  display: flex;
+  min-height: 43px;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-navy-950);
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.importCheckbox input {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  accent-color: var(--color-orange-600);
+}
+
+.importSelectionBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+}
+
+.gradeImportTable {
+  min-width: 1180px;
+}
+
+.gradeImportTable th:nth-child(2),
+.gradeImportTable td:nth-child(2) {
+  white-space: nowrap;
+}
+
+.gradeImportTable td {
+  line-height: 1.4;
+}
+
 .fileButton {
   display: inline-flex;
   flex: 0 0 auto;
@@ -1022,6 +1080,10 @@
   .studentSelector h3 {
     grid-column: 1 / -1;
   }
+
+  .importOptions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
@@ -1035,7 +1097,8 @@
 
   .formGrid,
   .shortcutGrid,
-  .cardGrid {
+  .cardGrid,
+  .importOptions {
     grid-template-columns: 1fr;
   }
 

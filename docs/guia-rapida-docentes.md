@@ -46,6 +46,22 @@ Puedes usar Enter o las flechas para avanzar por la columna. Si una celda muestr
 error, corrígela y sal de ella para reintentar. Las matrículas retiradas no
 aparecen en la pantalla de notas; su historial se conserva en **Alumnos**.
 
+### Importar notas desde Excel o CSV
+
+1. Descarga la **Plantilla de este grupo** o la **Plantilla de varios grupos**.
+2. Completa 1B, 2B, 3B y 4B con enteros de 0 a 20. No cambies las columnas de
+   identificadores de la plantilla.
+3. Selecciona si deseas actualizar notas, completar solo celdas vacías o
+   reemplazar los bimestres incluidos.
+4. Sube el archivo y revisa cada error, alumno nuevo y reemplazo detectado.
+5. Selecciona únicamente las filas correctas y confirma la importación.
+
+Una celda vacía del archivo no modifica la nota guardada. Escribe **BORRAR**
+para limpiarla explícitamente. La opción **Reemplazar los bimestres incluidos**
+limpia primero todo el bimestre de cada grupo detectado, por lo que debe usarse
+solo con una plantilla completa. El sistema crea un respaldo automático antes
+de reemplazar información.
+
 ## 5. Escribir recomendaciones
 
 En **Recomendaciones**:
@@ -83,7 +99,8 @@ En **Respaldos**, descarga un JSON antes de cambios importantes. Para restaurar:
 3. confirma el modo de restauración;
 4. escribe la frase solicitada.
 
-Al restaurar el mismo grupo se guarda automáticamente su estado anterior.
+Al restaurar el mismo grupo o reemplazar notas mediante una importación se
+guarda automáticamente su estado anterior.
 
 ## 8. Si algo falla
 

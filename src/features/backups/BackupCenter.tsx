@@ -19,7 +19,7 @@ type HistoryItem = {
   created_at: string;
   id: string;
   payload_sha256: string;
-  reason: "antes_de_restaurar";
+  reason: "antes_de_importar_notas" | "antes_de_restaurar";
 };
 
 const MAX_BACKUP_BYTES = 20 * 1024 * 1024;
@@ -471,7 +471,7 @@ export function BackupCenter() {
         <header>
           <div>
             <p className={styles.eyebrow}>Protección automática</p>
-            <h3>Historial previo a restauraciones</h3>
+            <h3>Historial de respaldos automáticos</h3>
           </div>
           <button
             className={styles.textButton}
@@ -486,15 +486,19 @@ export function BackupCenter() {
           <Spinner label="Cargando respaldos automáticos" />
         ) : !history.length ? (
           <p className={styles.empty}>
-            Aún no se ha reemplazado este grupo. El primer respaldo automático
-            aparecerá antes de una restauración.
+            Aún no se ha reemplazado información del grupo. El primer respaldo
+            aparecerá antes de una restauración o importación de notas.
           </p>
         ) : (
           <div className={styles.historyList}>
             {history.map((item) => (
               <article key={item.id}>
                 <div>
-                  <strong>Estado anterior a restauración</strong>
+                  <strong>
+                    {item.reason === "antes_de_importar_notas"
+                      ? "Estado anterior a importación de notas"
+                      : "Estado anterior a restauración"}
+                  </strong>
                   <span>
                     {new Intl.DateTimeFormat("es-PE", {
                       dateStyle: "medium",

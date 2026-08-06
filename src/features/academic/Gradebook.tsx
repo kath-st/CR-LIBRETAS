@@ -17,6 +17,7 @@ import {
 } from "@/domain/academic/calculations";
 import { SaveVersionTracker } from "@/domain/academic/autosave";
 import { useGroupWorkspace } from "@/features/groups/GroupWorkspace";
+import { GradeImport } from "@/features/imports/GradeImport";
 import { createClient } from "@/lib/supabase/client";
 import styles from "./Academic.module.css";
 import { gradeInputSchema } from "./schemas";
@@ -262,6 +263,16 @@ export function Gradebook() {
     void persistGrade(key, job);
   }
 
+  const flushPendingSaves = useCallback(async () => {
+    const jobs = [...pending.current.entries()];
+    for (const [key] of jobs) {
+      const timer = timers.current.get(key);
+      if (timer) clearTimeout(timer);
+      timers.current.delete(key);
+    }
+    await Promise.all(jobs.map(([key, job]) => persistGrade(key, job)));
+  }, [persistGrade]);
+
   function changeGrade(
     event: ChangeEvent<HTMLInputElement>,
     enrollmentId: string,
@@ -394,6 +405,13 @@ export function Gradebook() {
         <Alert title="No se pudo abrir el registro de notas" tone="danger">
           <p>{error}</p>
         </Alert>
+      ) : null}
+
+      {!loading ? (
+        <GradeImport
+          onBeforeImport={flushPendingSaves}
+          onImported={loadGradebook}
+        />
       ) : null}
 
       {loading ? (
