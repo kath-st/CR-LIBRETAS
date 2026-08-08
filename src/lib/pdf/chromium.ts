@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { execFile } from "node:child_process";
-import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -76,7 +76,7 @@ export async function generatePdfFromHtml(html: string) {
   try {
     await writeFile(htmlPath, html, "utf8");
     const executable = await executablePath();
-    await run(
+    const { stderr, stdout } = await run(
       executable,
       [
         "--headless=new",
@@ -92,6 +92,7 @@ export async function generatePdfFromHtml(html: string) {
         "--no-pdf-header-footer",
         "--print-to-pdf-no-header",
         "--run-all-compositor-stages-before-draw",
+        "--timeout=10000",
         "--virtual-time-budget=2500",
         `--crash-dumps-dir=${crashDirectory}`,
         `--user-data-dir=${profileDirectory}`,
@@ -111,6 +112,22 @@ export async function generatePdfFromHtml(html: string) {
         windowsHide: true,
       },
     );
+
+    try {
+      const pdfStats = await stat(pdfPath);
+      if (pdfStats.size === 0) throw new Error("El archivo PDF está vacío.");
+    } catch (cause) {
+      console.error("Chromium terminó sin crear el PDF de boletas.", {
+        cause,
+        htmlBytes: Buffer.byteLength(html),
+        stderr: stderr.trim().slice(-4_000),
+        stdout: stdout.trim().slice(-1_000),
+      });
+      throw new Error(
+        "El servidor no pudo crear el PDF de boletas. Revisa los registros de Chromium en Render.",
+      );
+    }
+
     return await readFile(pdfPath);
   } finally {
     await rm(jobDirectory, { force: true, recursive: true }).catch(() => {});

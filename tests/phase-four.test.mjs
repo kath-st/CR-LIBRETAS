@@ -102,6 +102,29 @@ test("la plantilla genera una hoja A4 por cada uno de 30 alumnos", () => {
   assert.match(html, /page-break-after:\s*always/);
 });
 
+test("la plantilla incluye los recursos gráficos una sola vez por lote", () => {
+  const uniqueAssets = {
+    border: "data:image/png;base64,BORDER",
+    crest: "data:image/png;base64,CREST",
+    directorSignature: "data:image/png;base64,SIGNATURE",
+    seal: "data:image/png;base64,SEAL",
+    watermark: "data:image/png;base64,WATERMARK",
+  };
+  const html = buildReportHtml(
+    snapshot(Array.from({ length: 30 }, (_, index) => card(index + 1))),
+    uniqueAssets,
+  );
+
+  for (const asset of Object.values(uniqueAssets)) {
+    assert.equal(html.split(asset).length - 1, 1);
+  }
+  assert.equal(
+    (html.match(/data-report-asset="crest"/g) ?? []).length,
+    30,
+  );
+  assert.ok(Buffer.byteLength(html) < 250_000);
+});
+
 test("la plantilla adapta filas y no inventa asignaturas retiradas", () => {
   const html = buildReportHtml(snapshot([card(1, 7)]), assets);
   assert.match(html, /style="--row-count:7"/);

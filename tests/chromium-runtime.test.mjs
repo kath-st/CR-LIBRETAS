@@ -13,10 +13,12 @@ test("Chromium usa directorios escribibles y desactiva Crashpad al generar PDFs"
   assert.match(source, /--disable-crash-reporter/);
   assert.match(source, /--disable-breakpad/);
   assert.match(source, /--crash-dumps-dir=/);
+  assert.match(source, /--timeout=10000/);
   assert.match(source, /HOME:\s*homeDirectory/);
   assert.match(source, /XDG_CACHE_HOME:\s*cacheDirectory/);
   assert.match(source, /XDG_CONFIG_HOME:\s*configDirectory/);
   assert.match(source, /pathToFileURL\(htmlPath\)\.href/);
+  assert.match(source, /Chromium terminó sin crear el PDF de boletas/);
 });
 
 test("el usuario de producción tiene un HOME válido para Chromium", async () => {

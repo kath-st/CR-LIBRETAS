@@ -75,7 +75,6 @@ function renderArea(area: ReportArea) {
 function renderCard(
   snapshot: ReportBatchSnapshot,
   card: ReportCard,
-  assets: ReportAssets,
 ) {
   const rowCount = Math.max(
     1,
@@ -89,12 +88,12 @@ function renderCard(
 
   return `
     <article class="report-sheet ${densityClass}" style="--row-count:${rowCount}">
-      <img alt="" class="orange-border" src="${assets.border}">
-      <img alt="" class="watermark" src="${assets.watermark}">
+      <img alt="" class="orange-border" data-report-asset="border">
+      <img alt="" class="watermark" data-report-asset="watermark">
 
       <div class="report-content">
         <header class="institution-header">
-        <img alt="Escudo institucional" class="crest" src="${assets.crest}">
+        <img alt="Escudo institucional" class="crest" data-report-asset="crest">
         <div>
           <p>Institución Educativa Privada</p>
           <h1>“${escapeHtml(snapshot.institution.name.replace(/^I\.?E\.?P\.?\s*/i, ""))}”</h1>
@@ -151,8 +150,8 @@ function renderCard(
           <span>FIRMA DE LA TUTORA</span>
         </div>
         <div class="seal">
-          <img alt="Sello institucional" class="seal-image" src="${assets.seal}">
-          <img alt="Firma de la directora" class="director-signature" src="${assets.directorSignature}">
+          <img alt="Sello institucional" class="seal-image" data-report-asset="seal">
+          <img alt="Firma de la directora" class="director-signature" data-report-asset="directorSignature">
         </div>
         <div class="final">
           <span>PROMEDIO FINAL</span>
@@ -429,6 +428,15 @@ const REPORT_CSS = `
   }
 `;
 
+function serializedAssets(assets: ReportAssets) {
+  return JSON.stringify(assets)
+    .replaceAll("&", "\\u0026")
+    .replaceAll("<", "\\u003c")
+    .replaceAll(">", "\\u003e")
+    .replaceAll("\u2028", "\\u2028")
+    .replaceAll("\u2029", "\\u2029");
+}
+
 export function buildReportHtml(
   snapshot: ReportBatchSnapshot,
   assets: ReportAssets,
@@ -447,7 +455,19 @@ export function buildReportHtml(
     <style>${REPORT_CSS}</style>
   </head>
   <body>
-    ${snapshot.cards.map((card) => renderCard(snapshot, card, assets)).join("")}
+    ${snapshot.cards.map((card) => renderCard(snapshot, card)).join("")}
+    <script id="report-assets" type="application/json">${serializedAssets(assets)}</script>
+    <script>
+      (() => {
+        const source = document.getElementById("report-assets");
+        const assets = JSON.parse(source?.textContent || "{}");
+        document.querySelectorAll("[data-report-asset]").forEach((image) => {
+          const key = image.getAttribute("data-report-asset");
+          const src = key ? assets[key] : null;
+          if (typeof src === "string") image.src = src;
+        });
+      })();
+    </script>
   </body>
 </html>`;
 }
