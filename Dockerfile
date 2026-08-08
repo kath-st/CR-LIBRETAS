@@ -38,13 +38,15 @@ RUN apt-get update \
        fonts-noto-core \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --system --gid 1001 nodejs \
-    && useradd --system --uid 1001 --gid nodejs nextjs
+    && useradd --system --uid 1001 --gid nodejs \
+       --create-home --home-dir /home/nextjs nextjs
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOSTNAME=0.0.0.0
 ENV PORT=10000
 ENV CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
+ENV HOME=/home/nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
