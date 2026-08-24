@@ -279,7 +279,7 @@ const REPORT_CSS = `
   }
   table { border-collapse: collapse; table-layout: fixed; }
   .student-table, .grades-table { width: 100%; }
-  .student-table { margin-bottom: 3.8mm; font-size: 7.2pt; }
+  .student-table { margin-bottom: 3.8mm; font-size: 8.2pt; }
   .student-table th, .student-table td,
   .grades-table th, .grades-table td { border: .35mm solid #000; }
   .student-table th, .student-table td {
@@ -290,7 +290,7 @@ const REPORT_CSS = `
   }
   .student-table th { width: 25%; background: rgba(220, 234, 247, .78); }
   .student-table td { font-family: Arial, sans-serif; font-weight: 800; }
-  .grades-table { font-size: 6.45pt; line-height: 1.18; }
+  .grades-table { font-size: 7.2pt; line-height: 1.18; }
   .grades-table thead th {
     height: 5.1mm;
     padding: .45mm;
@@ -306,13 +306,13 @@ const REPORT_CSS = `
   .grades-table tbody td, .grades-table tbody th { padding: .32mm .75mm; }
   .grades-table tbody td:not(.subject) {
     font-family: Arial, sans-serif;
-    font-size: 6.5pt;
+    font-size: 7.2pt;
     font-weight: 800;
     text-align: center;
   }
   .area {
     color: #0d3568;
-    font-size: 6.35pt;
+    font-size: 7pt;
     line-height: 1.16;
     text-align: center;
     text-transform: uppercase;
@@ -320,7 +320,7 @@ const REPORT_CSS = `
   .area.direct { text-align: left; padding-left: 2.5mm; }
   .subject {
     color: #633184;
-    font-size: 6.15pt;
+    font-size: 6.8pt;
     font-weight: 800;
     text-transform: uppercase;
   }
@@ -346,13 +346,13 @@ const REPORT_CSS = `
     padding: 1mm 2.5mm;
     border-bottom: .35mm solid #000;
     color: #633184;
-    font-size: 6.2pt;
+    font-size: 7pt;
     text-align: left;
   }
   .recommendation p {
     margin: 0;
     padding: 2mm 2.5mm;
-    font-size: 6.45pt;
+    font-size: 7.2pt;
     line-height: 1.38;
     text-align: center;
   }
@@ -367,7 +367,7 @@ const REPORT_CSS = `
     place-items: center;
     padding: 2mm 1.5mm;
     border-bottom: .35mm solid #000;
-    font-size: 6.4pt;
+    font-size: 7pt;
     text-transform: uppercase;
   }
   .signature span {
@@ -376,7 +376,7 @@ const REPORT_CSS = `
     align-items: flex-end;
     justify-content: center;
     padding: 2mm 1mm 2.2mm;
-    font-size: 6pt;
+    font-size: 6.8pt;
   }
   .signature span::before {
     position: absolute;
@@ -404,7 +404,7 @@ const REPORT_CSS = `
   .final > span {
     padding: .8mm .4mm;
     border-bottom: .3mm solid #000;
-    font-size: 5.25pt;
+    font-size: 6.2pt;
     font-weight: 800;
   }
   .final > span:nth-of-type(2) { border-top: .3mm solid #000; }
@@ -412,12 +412,12 @@ const REPORT_CSS = `
   .merit { display: grid; grid-template-columns: repeat(4, 1fr); }
   .merit span { display: grid; grid-template-rows: 3mm 1fr; border-right: .3mm solid #000; }
   .merit span:last-child { border-right: 0; }
-  .merit small { border-bottom: .3mm solid #000; font-size: 4.5pt; }
-  .merit b { display: grid; place-items: center; font: 800 6pt Arial, sans-serif; }
+  .merit small { border-bottom: .3mm solid #000; font-size: 5.4pt; }
+  .merit b { display: grid; place-items: center; font: 800 6.8pt Arial, sans-serif; }
   .density-compact .grades-table,
-  .density-tight .grades-table { font-size: 5.7pt; }
-  .density-compact .subject,
-  .density-tight .subject { font-size: 5.35pt; }
+  .density-tight .grades-table { font-size: 6.4pt; }
+  .density-compact .subject { font-size: 6.2pt; }
+  .density-tight .subject { font-size: 5.9pt; }
   .density-tight .institution-header { min-height: 40mm; }
   .density-tight .official-year { margin-top: 1.5mm; }
   .density-tight .summary { min-height: 34mm; }

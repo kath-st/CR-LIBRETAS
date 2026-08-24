@@ -132,6 +132,18 @@ test("la plantilla adapta filas y no inventa asignaturas retiradas", () => {
   assert.doesNotMatch(html, /Asignatura 8/);
 });
 
+test("la libreta conserva tipografía legible según la cantidad de filas", () => {
+  const regular = buildReportHtml(snapshot([card(1, 19)]), assets);
+  const compact = buildReportHtml(snapshot([card(1, 20)]), assets);
+  const tight = buildReportHtml(snapshot([card(1, 25)]), assets);
+
+  assert.match(regular, /\.student-table \{[^}]*font-size: 8\.2pt;/);
+  assert.match(regular, /\.grades-table \{ font-size: 7\.2pt;/);
+  assert.match(compact, /class="report-sheet density-compact"/);
+  assert.match(tight, /class="report-sheet density-tight"/);
+  assert.match(tight, /\.density-tight \.grades-table \{ font-size: 6\.4pt; \}/);
+});
+
 test("la plantilla incluye la firma de la directora y encierra el mérito", () => {
   const html = buildReportHtml(snapshot([card(1)]), assets);
   assert.match(html, /alt="Firma de la directora"/);
