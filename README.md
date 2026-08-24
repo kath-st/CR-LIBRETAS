@@ -34,20 +34,6 @@ importaciones y respaldos.
 - Node.js Test Runner y pgTAP;
 - Docker para despliegue.
 
-`requirements.txt` no es necesario: este es un proyecto Node.js. Las
-dependencias reproducibles están declaradas en `package.json` y
-`package-lock.json`.
-
-## Requisitos
-
-- Node.js 22.13 o superior;
-- npm;
-- un proyecto Supabase;
-- Supabase CLI para aplicar migraciones;
-- Edge, Chrome o Chromium para generar PDF localmente;
-- Docker Desktop únicamente si se ejecutarán Supabase y las pruebas pgTAP de
-  forma local.
-
 ## Instalación local
 
 ```bash
@@ -70,11 +56,6 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=CLAVE_PUBLICA
 SUPABASE_SECRET_KEY=CLAVE_PRIVADA_DEL_SERVIDOR
 CHROMIUM_EXECUTABLE_PATH=C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
 ```
-
-Si el proyecto Supabase todavía utiliza claves JWT heredadas, se puede usar
-`NEXT_PUBLIC_SUPABASE_ANON_KEY` en lugar de la clave publicable. La aplicación
-prioriza la clave publicable moderna.
-
 Inicia el servidor:
 
 ```bash
@@ -155,94 +136,3 @@ docs/referencias-boleta/ Originales utilizados para sincronizar la marca
 docs/guia-rapida-docentes.md
                          Manual operativo
 ```
-
-## Validación antes de publicar
-
-```bash
-npm ci
-npm run validate
-npx supabase migration list
-```
-
-Además, comprueba manualmente:
-
-1. acceso como administradora y docente;
-2. aprobación y asignación de un grupo;
-3. notas por asignatura y por alumno;
-4. recomendaciones;
-5. PDF individual y grupal;
-6. importación XLSX/CSV;
-7. exportación y restauración JSON;
-8. cierre de sesión y aislamiento entre grupos.
-
-## Despliegue con GitHub y Render
-
-El repositorio incluye un `Dockerfile` de producción. La imagen instala
-Chromium y utiliza la salida `standalone` de Next.js.
-
-1. Sube el repositorio a una cuenta privada de GitHub.
-2. En Render crea un **Web Service** desde ese repositorio.
-3. Selecciona **Docker** como runtime.
-4. Usa `/api/estado` como Health Check Path.
-5. Configura estas variables:
-
-```dotenv
-NEXT_PUBLIC_SUPABASE_URL=https://PROYECTO.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=CLAVE_PUBLICA
-SUPABASE_SECRET_KEY=CLAVE_PRIVADA_DEL_SERVIDOR
-```
-
-El contenedor ya configura:
-
-```dotenv
-CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
-PORT=10000
-```
-
-Después del primer despliegue, agrega la URL pública en:
-
-**Supabase → Authentication → URL Configuration**
-
-Ejemplo:
-
-```text
-Site URL:
-https://cr-libretas.onrender.com
-
-Redirect URLs:
-http://localhost:3000/**
-https://cr-libretas.onrender.com/**
-```
-
-La instancia gratuita de Render sirve para validación, pero se suspende por
-inactividad. Para el uso diario del colegio se recomienda una instancia que
-permanezca activa.
-
-Cada cambio enviado a `main` ejecutará la validación de GitHub Actions y podrá
-desplegarse automáticamente.
-
-## Seguridad
-
-- El repositorio debe permanecer privado porque el sistema trata datos de
-  estudiantes.
-- `.env.local` y todas las variantes reales de `.env` están excluidas de Git y
-  Docker.
-- Nunca uses `SUPABASE_SECRET_KEY` en variables `NEXT_PUBLIC_*`.
-- Nunca guardes contraseñas, exportaciones JSON ni PDF reales en el repositorio.
-- Rota inmediatamente cualquier clave privada que se haya compartido por chat,
-  correo o capturas.
-- Mantén RLS habilitado y ejecuta las pruebas antes de aplicar cambios a
-  producción.
-
-## Documentación conservada
-
-- [Especificación funcional](docs/requisitos.md)
-- [Guía rápida para docentes](docs/guia-rapida-docentes.md)
-- [Migraciones y pruebas Supabase](supabase/README.md)
-
-Los recursos originales de las boletas se conservan en
-`docs/referencias-boleta/` porque el proceso de compilación sincroniza desde
-allí el escudo, sello y firma institucional.
-=======
-# CR-LIBRETAS
->>>>>>> dede9d98778164b13a5eef9e6ce271bf54eaf7d4
