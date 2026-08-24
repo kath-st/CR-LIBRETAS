@@ -408,6 +408,10 @@ export function ReportCards() {
               <div>
                 <p className={styles.eyebrow}>Archivo privado</p>
                 <h3>Historial de PDFs</h3>
+                <p className={styles.historyNote}>
+                  Los PDFs anteriores conservan el diseño con el que fueron
+                  generados. Crea uno nuevo para aplicar la plantilla actual.
+                </p>
               </div>
               <button
                 className={styles.textButton}

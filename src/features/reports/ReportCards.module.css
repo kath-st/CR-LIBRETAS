@@ -254,6 +254,14 @@
   gap: 14px;
 }
 
+.historyNote {
+  max-width: 58ch;
+  margin: 4px 0 0;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
 .historyList {
   display: grid;
   gap: 9px;
