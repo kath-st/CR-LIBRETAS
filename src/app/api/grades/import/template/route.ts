@@ -26,9 +26,10 @@ type Subject = {
   group_id: string;
   id: string;
   name: string;
+  position: number;
 };
 
-type Area = { group_id: string; id: string; name: string };
+type Area = { group_id: string; id: string; name: string; position: number };
 type Grade = {
   enrollment_id: string;
   group_subject_id: string;
@@ -102,12 +103,12 @@ export async function GET(request: NextRequest) {
           .eq("status", "activo"),
         client
           .from("group_areas")
-          .select("id, group_id, name")
+          .select("id, group_id, name, position")
           .in("group_id", groupIds)
           .eq("active", true),
         client
           .from("group_subjects")
-          .select("id, group_id, group_area_id, name")
+          .select("id, group_id, group_area_id, name, position")
           .in("group_id", groupIds)
           .eq("active", true),
         loadGrades(client, groupIds),
@@ -138,6 +139,10 @@ export async function GET(request: NextRequest) {
       const groupSubjects = subjects.filter(
         (subject) =>
           subject.group_id === group.id && areaById.has(subject.group_area_id),
+      ).sort((a, b) =>
+        (areaById.get(a.group_area_id)?.position ?? 0) -
+          (areaById.get(b.group_area_id)?.position ?? 0) ||
+        a.position - b.position || a.name.localeCompare(b.name, "es"),
       );
       return groupEnrollments.flatMap((enrollment) =>
         groupSubjects.map((subject) => ({

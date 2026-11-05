@@ -161,6 +161,36 @@ export function buildGradeImportRows(sources: RowSource[]) {
       );
     }
 
+    const recognized = new Set<number>([
+      columns.academicYear,
+      columns.area,
+      columns.combinedName,
+      columns.enrollmentId,
+      columns.firstNames,
+      columns.grade,
+      columns.groupId,
+      columns.groupName,
+      columns.lastNames,
+      columns.level,
+      columns.section,
+      columns.subject,
+      columns.subjectId,
+      ...columns.terms,
+    ]);
+    const unknown = source.rows[0]
+      ?.map((header, index) => ({ header: cleanText(header), index }))
+      .filter(({ header, index }) =>
+        !recognized.has(index) &&
+        (header || source.rows.slice(1).some((row) => cleanText(row[index]))),
+      ) ?? [];
+    if (unknown.length) {
+      throw new Error(
+        `La hoja «${source.name}» contiene columnas no reconocidas: ${unknown
+          .map(({ header, index }) => header || `columna ${index + 1}`)
+          .join(", ")}. Corrígelas antes de importar para evitar notas omitidas.`,
+      );
+    }
+
     for (let index = 1; index < source.rows.length; index += 1) {
       const row = source.rows[index] ?? [];
       if (row.every((cell) => !cleanText(cell))) continue;

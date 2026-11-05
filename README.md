@@ -77,21 +77,43 @@ cd CR-LIBRETAS
 npm ci
 ```
 
-En Windows, crea la configuración local a partir del ejemplo:
+En Windows, si todavía no existe `.env.local`, créalo a partir del ejemplo:
 
 ```powershell
 Copy-Item .env.example .env.local
 ```
 
-Completa las variables de Supabase y la ruta de Chromium en `.env.local` y
-ejecuta:
+En el [panel de tu proyecto Supabase](https://supabase.com/dashboard), abre
+**Connect** y copia la **Project URL** en `NEXT_PUBLIC_SUPABASE_URL`. Luego ve a
+**Settings > API Keys** y copia la **Publishable key** en
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` y la **Secret key** en
+`SUPABASE_SECRET_KEY`. Esta última solo debe estar en `.env.local`, que Git
+ignora. `CHROMIUM_EXECUTABLE_PATH` es opcional en Windows si Edge o Chrome está
+instalado en su ubicación habitual.
+
+Deja las variables sin comillas y ejecuta:
 
 ```bash
 npm run dev
 ```
 
+Si PowerShell bloquea `npm.ps1`, usa `npm.cmd run dev`.
+
 La aplicación estará disponible en
 [http://localhost:3000](http://localhost:3000).
+
+### Malla curricular de cada grupo
+
+En **Malla del grupo** puedes agregar áreas y asignaturas, cambiar sus nombres,
+activarlas o desactivarlas, ordenarlas y decidir si cada área entra en el
+promedio. Cada grupo conserva su propia malla y el catálogo inicial no cambia.
+Un elemento con notas o boletas históricas se desactiva en lugar de borrarse.
+
+Las plantillas de notas nuevas incluyen los identificadores de grupo,
+matrícula y asignatura. Conserva esas columnas: permiten importar notas aunque
+cambie un nombre. Si una plantilla antigua no tiene `asignatura_id`, el sistema
+acepta nombres anteriores cuando identifica una única asignatura; si hay
+ambigüedad, detiene la importación y muestra el error en la vista previa.
 
 ## Validación del proyecto
 

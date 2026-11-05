@@ -6,6 +6,7 @@ import {
   type GradeImportChange,
   type ParsedGradeImportRow,
 } from "./grade-import";
+import { importRowMatchesGroup, importSubjectLabelsMatch, resolveImportSubjectByName } from "./grade-import-resolver";
 
 export type GradeImportPolicy = "fill_empty" | "replace_terms" | "update";
 export type GradeImportScope = "current" | "multiple";
@@ -32,7 +33,8 @@ type Subject = {
   group_id: string;
   id: string;
   name: string;
-  group_areas: { active: boolean; name: string };
+  name_aliases: string[];
+  group_areas: { active: boolean; name: string; name_aliases: string[] };
 };
 
 type StoredGrade = {
@@ -189,7 +191,7 @@ export async function resolveGradeImport(
       .in("group_id", groupIds),
     client
       .from("group_subjects")
-      .select("id, group_id, name, active, group_areas!inner(name, active)")
+      .select("id, group_id, name, name_aliases, active, group_areas!inner(name, name_aliases, active)")
       .in("group_id", groupIds),
     loadStoredGrades(client, groupIds),
   ]);
@@ -223,6 +225,10 @@ export async function resolveGradeImport(
           ? "No se pudo identificar un grupo autorizado. Usa grupo_id, grupo o año/nivel/grado/sección."
           : "No se pudo abrir el grupo seleccionado.",
       );
+    } else if (input.scope === "current") {
+      if (!importRowMatchesGroup(source, group)) {
+        errors.push("La fila indica otro grupo. Selecciona el grupo correcto o usa su plantilla actual.");
+      }
     }
 
     let enrollment: Enrollment | undefined;
@@ -264,23 +270,19 @@ export async function resolveGradeImport(
       if (source.subjectId) {
         subject = groupSubjects.find((item) => item.id === source.subjectId);
         if (!subject) errors.push("La asignatura no pertenece al grupo indicado.");
-      } else {
-        let matches = groupSubjects.filter(
-          (item) => normalizeImportText(item.name) === normalizeImportText(source.subject),
-        );
-        if (source.area) {
-          matches = matches.filter(
-            (item) =>
-              normalizeImportText(item.group_areas.name) === normalizeImportText(source.area),
+        else if (!importSubjectLabelsMatch(subject, source.subject, source.area)) {
+          errors.push(
+            "El ID de asignatura no coincide con el nombre de asignatura o área. Descarga una plantilla nueva o corrige la fila.",
           );
         }
-        if (matches.length > 1) {
-          errors.push("La asignatura es ambigua; agrega el área o usa asignatura_id.");
-        } else if (!matches.length) {
-          errors.push("La asignatura no existe en la malla del grupo.");
-        } else {
-          subject = matches[0];
-        }
+      } else {
+        const resolved = resolveImportSubjectByName(
+          groupSubjects,
+          source.subject,
+          source.area,
+        );
+        subject = resolved.subject;
+        if (resolved.error) errors.push(resolved.error);
       }
       if (subject && (!subject.active || !subject.group_areas.active)) {
         errors.push("La asignatura o su área está desactivada.");

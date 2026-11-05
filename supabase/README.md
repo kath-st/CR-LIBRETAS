@@ -56,3 +56,11 @@ el [README principal](../README.md).
 La clave privada no es necesaria para migrar y nunca debe llegar al navegador.
 La aplicación prioriza `SUPABASE_SECRET_KEY` y conserva compatibilidad temporal
 con `SUPABASE_SERVICE_ROLE_KEY`.
+
+Las migraciones `20261103000100_group_curriculum_editing.sql` y
+`20261103000200_curriculum_backup_aliases.sql` habilitan la edición de la malla
+por grupo y conservan equivalencias de nombres en los respaldos. Deben
+aplicarse al proyecto remoto antes de usar la nueva interfaz o importar notas
+con ella. `npm run db:push` requiere iniciar sesión y vincular el proyecto,
+como se indica arriba. La aplicación de las migraciones no renombra ni borra
+las áreas, asignaturas o notas existentes.

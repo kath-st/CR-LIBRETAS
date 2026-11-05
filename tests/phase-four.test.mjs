@@ -132,6 +132,17 @@ test("la plantilla adapta filas y no inventa asignaturas retiradas", () => {
   assert.doesNotMatch(html, /Asignatura 8/);
 });
 
+test("la boleta usa los nombres vigentes y conserva la agrupación y notas", () => {
+  const updated = card(1, 2);
+  updated.areas[0].name = "Laboratorio de ciencias";
+  updated.areas[0].subjects[0].name = "Biología aplicada";
+  const html = buildReportHtml(snapshot([updated]), assets);
+  assert.match(html, /Laboratorio de ciencias/);
+  assert.match(html, /Biología aplicada/);
+  assert.match(html, /rowspan="2"/);
+  assert.match(html, /<td>14<\/td><td>15<\/td><td>16<\/td><td>15<\/td>/);
+});
+
 test("la libreta conserva tipografía legible según la cantidad de filas", () => {
   const regular = buildReportHtml(snapshot([card(1, 19)]), assets);
   const compact = buildReportHtml(snapshot([card(1, 20)]), assets);

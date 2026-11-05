@@ -5,6 +5,7 @@ import {
   buildGradeImportRows,
   normalizeImportText,
 } from "../src/features/imports/grade-import.ts";
+import { importRowMatchesGroup, importSubjectLabelsMatch, resolveImportSubjectByName } from "../src/features/imports/grade-import-resolver.ts";
 
 const root = new URL("../", import.meta.url);
 
@@ -79,6 +80,68 @@ test("las plantillas omiten filas sin notas y señalan valores inválidos", () =
 
 test("la normalización de coincidencias ignora mayúsculas y tildes", () => {
   assert.equal(normalizeImportText("  Comunicación ÍNTEGRAL "), "comunicacion integral");
+});
+
+test("los nombres anteriores resuelven la misma asignatura cuando no hay ID", () => {
+  const subjects = [{
+    id: "s1",
+    name: "Cálculo",
+    name_aliases: ["Aritmética"],
+    group_areas: { name: "Matemática", name_aliases: ["Área matemática"] },
+  }];
+  const result = resolveImportSubjectByName(subjects, "Aritmetica", "Area matematica");
+  assert.equal(result.subject?.id, "s1");
+  assert.equal(result.error, undefined);
+});
+
+test("un nombre anterior reutilizado resulta ambiguo y no asigna notas", () => {
+  const subjects = [
+    { id: "old", name: "Cálculo", name_aliases: ["Aritmética"], group_areas: { name: "Matemática", name_aliases: [] } },
+    { id: "new", name: "Aritmética", name_aliases: [], group_areas: { name: "Matemática", name_aliases: [] } },
+  ];
+  const result = resolveImportSubjectByName(subjects, "Aritmética", "Matemática");
+  assert.equal(result.subject, undefined);
+  assert.match(result.error, /ambigua/);
+});
+
+test("un ID no acepta el nombre de otra asignatura", () => {
+  const subject = {
+    id: "s1",
+    name: "Cálculo",
+    name_aliases: ["Aritmética"],
+    group_areas: { name: "Matemática", name_aliases: [] },
+  };
+  assert.equal(importSubjectLabelsMatch(subject, "Aritmética", "Matemática"), true);
+  assert.equal(importSubjectLabelsMatch(subject, "Geometría", "Matemática"), false);
+  assert.equal(importSubjectLabelsMatch(subject, "Cálculo", "Comunicación"), false);
+});
+
+test("una plantilla de otro grupo no se asigna al grupo seleccionado", () => {
+  const group = {
+    id: "grupo-a",
+    display_name: "Primaria 4 A",
+    academic_year: 2026,
+    level: "primaria",
+    grade: 4,
+    section: "A",
+  };
+  const row = { groupId: "grupo-b", groupName: "", academicYear: null, level: "", grade: null, section: "" };
+  assert.equal(importRowMatchesGroup(row, group), false);
+  assert.equal(importRowMatchesGroup({ ...row, groupId: "", section: "B" }, group), false);
+  assert.equal(importRowMatchesGroup({ ...row, groupId: "grupo-a" }, group), true);
+});
+
+test("la importación rechaza columnas adicionales en vez de ignorarlas", () => {
+  assert.throws(
+    () => buildGradeImportRows([{
+      name: "Notas",
+      rows: [
+        ["apellidos", "nombres", "asignatura", "1B", "Asignatura desconocida"],
+        ["Pérez", "Ana", "Aritmética", 15, 12],
+      ],
+    }]),
+    /columnas no reconocidas: Asignatura desconocida/,
+  );
 });
 
 test("la importación de notas incluye interfaz, API y migración", async () => {

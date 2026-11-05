@@ -119,6 +119,10 @@ test("el respaldo acepta los UUID deterministas de los catálogos", () => {
   };
 
   assert.equal(backupDocumentSchema.safeParse(document).success, true);
+  const custom = structuredClone(document);
+  custom.payload.areas[0].catalog_area_id = null;
+  custom.payload.subjects[0].catalog_subject_id = null;
+  assert.equal(backupDocumentSchema.safeParse(custom).success, true);
 });
 
 test("la migración exige hash, transacción e historial inmutable", async () => {

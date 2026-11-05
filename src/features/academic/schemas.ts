@@ -23,6 +23,12 @@ export const customSubjectSchema = z.object({
   position: z.coerce.number().int().min(1).max(999),
 });
 
+export const curriculumNameSchema = z
+  .string()
+  .trim()
+  .min(2, "El nombre debe tener al menos 2 caracteres.")
+  .max(100, "El nombre no puede superar 100 caracteres.");
+
 export const gradeInputSchema = z.union([
   z.literal(""),
   z.coerce.number().int().min(0).max(20),

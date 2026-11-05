@@ -471,6 +471,70 @@
   font-size: 0.98rem;
 }
 
+.areaHeader > div:first-child {
+  min-width: 220px;
+}
+
+.addArea {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px 19px;
+  border: 1px solid #dfe5eb;
+  border-radius: 14px;
+  background: white;
+}
+
+.addArea label {
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.addArea input,
+.renameForm input {
+  min-width: 180px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.renameForm,
+.inlineActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.inlineActions {
+  margin-top: 7px;
+}
+
+.plainButton,
+.deleteLink {
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: var(--color-navy-900);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.73rem;
+  font-weight: 750;
+  text-decoration: underline;
+}
+
+.deleteLink {
+  color: var(--color-danger);
+}
+
+.plainButton:disabled,
+.deleteLink:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .toggles {
   display: flex;
   flex-wrap: wrap;
@@ -492,7 +556,7 @@
 
 .subjectRow {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) 110px 120px;
+  grid-template-columns: minmax(220px, 1fr) 110px 120px;
   align-items: center;
   gap: 12px;
   padding: 12px 19px;

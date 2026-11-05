@@ -33,11 +33,12 @@ export const backupDocumentSchema = z.object({
       .array(
         z.object({
           active: z.boolean(),
-          catalog_area_id: uuid,
+          catalog_area_id: uuid.nullable(),
           id: uuid,
           included_in_final: z.boolean(),
           is_direct: z.boolean(),
           name: z.string().min(2).max(100),
+          name_aliases: z.array(z.string().min(2).max(100)).optional(),
           position: z.number().int().positive(),
         }),
       )
@@ -108,6 +109,7 @@ export const backupDocumentSchema = z.object({
           group_area_id: uuid,
           id: uuid,
           name: z.string().min(2).max(100),
+          name_aliases: z.array(z.string().min(2).max(100)).optional(),
           position: z.number().int().positive(),
         }),
       )
