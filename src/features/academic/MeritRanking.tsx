@@ -88,7 +88,7 @@ export function MeritRanking() {
           .from("grades")
           .select("enrollment_id, group_subject_id, term, score")
           .eq("group_id", group.id)
-          .eq("term", term),
+          .lte("term", term),
       ]);
     const queryError =
       enrollmentResult.error ??
@@ -172,8 +172,8 @@ export function MeritRanking() {
           <p className={styles.eyebrow}>Resultados del grupo</p>
           <h2>Orden de mérito</h2>
           <p>
-            Compara el promedio interno de cada alumno usando únicamente las
-            notas del bimestre seleccionado.
+            Compara el promedio acumulado de cada alumno hasta el bimestre
+            seleccionado, con el mismo cálculo que aparece en la boleta.
           </p>
         </div>
         <label className={`${styles.field} ${styles.meritTermField}`}>

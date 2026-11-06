@@ -2,11 +2,12 @@ import "server-only";
 
 import {
   calculateStudentResult,
-  calculateTermAverage,
+  calculateCumulativeAverage,
   denseRanks,
   visibleInteger,
   type StudentGrade,
 } from "@/domain/academic/calculations";
+import { eligibleForTerm } from "@/domain/academic/merit-ranking";
 import { bearerSubject, isBearerAuthError } from "@/lib/auth/bearer";
 import { createBearerClient } from "@/lib/supabase/server";
 import {
@@ -27,8 +28,10 @@ type GroupRow = {
 
 type EnrollmentRow = {
   id: string;
+  status: "activo" | "retirado";
   student_id: string;
   students: { first_names: string; last_names: string };
+  withdrawn_from_term: number | null;
 };
 
 type AreaRow = {
@@ -140,10 +143,9 @@ export async function loadReportSnapshot(
     supabase
       .from("enrollments")
       .select(
-        "id, student_id, students!inner(first_names, last_names)",
+        "id, status, student_id, withdrawn_from_term, students!inner(first_names, last_names)",
       )
-      .eq("group_id", groupId)
-      .eq("status", "activo"),
+      .eq("group_id", groupId),
     supabase
       .from("group_areas")
       .select(
@@ -199,7 +201,10 @@ export async function loadReportSnapshot(
   const recommendations =
     (recommendationResult.data ?? []) as RecommendationRow[];
 
-  if (!enrollments.length) {
+  const activeEnrollments = enrollments.filter(
+    (enrollment) => enrollment.status === "activo",
+  );
+  if (!activeEnrollments.length) {
     throw new ReportDataError(
       "El grupo no tiene alumnos activos para generar boletas.",
       422,
@@ -216,8 +221,8 @@ export async function loadReportSnapshot(
     ? new Set(requestedEnrollmentIds)
     : null;
   const selected = requested
-    ? enrollments.filter((enrollment) => requested.has(enrollment.id))
-    : enrollments;
+    ? activeEnrollments.filter((enrollment) => requested.has(enrollment.id))
+    : activeEnrollments;
   if (!selected.length || (requested && selected.length !== requested.size)) {
     throw new ReportDataError(
       "La selección contiene una matrícula inactiva o ajena al grupo.",
@@ -262,7 +267,7 @@ export async function loadReportSnapshot(
     enrollments.map((enrollment) => [
       enrollment.id,
       REPORT_TERMS.map((term) =>
-        calculateTermAverage(
+        calculateCumulativeAverage(
           term,
           calculationAreas,
           calculationSubjects,
@@ -274,6 +279,17 @@ export async function loadReportSnapshot(
   const ranks = REPORT_TERMS.map((term, index) =>
     denseRanks(
       enrollments.flatMap((enrollment) => {
+        if (
+          !eligibleForTerm(
+            {
+              status: enrollment.status,
+              withdrawnFromTerm: enrollment.withdrawn_from_term,
+            },
+            term,
+          )
+        ) {
+          return [];
+        }
         const score = termAverages.get(enrollment.id)?.[index] ?? null;
         return score === null ? [] : [{ id: enrollment.id, score }];
       }),

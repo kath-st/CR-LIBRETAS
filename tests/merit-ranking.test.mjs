@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 import { buildMeritRanking } from "../src/domain/academic/merit-ranking.ts";
+import { calculateStudentResult } from "../src/domain/academic/calculations.ts";
 
 const root = new URL("../", import.meta.url);
 
@@ -62,6 +63,29 @@ test("el orden bimestral comparte puesto y señala registros provisionales", () 
     ],
   );
   assert.equal(ranking.entries[0].average, 18);
+});
+
+test("el mérito usa el promedio acumulado visible de la boleta", () => {
+  const grades = [
+    { enrollmentId: "e1", score: 20, subjectId: "s1", term: 1 },
+    { enrollmentId: "e1", score: 20, subjectId: "s2", term: 1 },
+    { enrollmentId: "e1", score: 10, subjectId: "s1", term: 2 },
+    { enrollmentId: "e1", score: 10, subjectId: "s2", term: 2 },
+    { enrollmentId: "e2", score: 10, subjectId: "s1", term: 1 },
+    { enrollmentId: "e2", score: 10, subjectId: "s2", term: 1 },
+    { enrollmentId: "e2", score: 20, subjectId: "s1", term: 2 },
+    { enrollmentId: "e2", score: 20, subjectId: "s2", term: 2 },
+  ];
+  const ranking = buildMeritRanking(2, enrollments, areas, subjects, grades);
+  for (const enrollmentId of ["e1", "e2"]) {
+    const studentGrades = grades.filter((grade) => grade.enrollmentId === enrollmentId);
+    const result = calculateStudentResult(areas, subjects, studentGrades);
+    const entry = ranking.entries.find((item) => item.id === enrollmentId);
+    assert.equal(entry.averageVisible, result.finalVisible);
+    assert.equal(entry.averageVisible, 15);
+    assert.equal(entry.rank, 1);
+  }
+  assert.equal(buildMeritRanking(3, enrollments, areas, subjects, grades).rankedStudents, 0);
 });
 
 test("un alumno retirado queda fuera de bimestres posteriores", () => {

@@ -132,7 +132,7 @@ test("las recomendaciones generan un borrador editable sin sobrescribirlo autom√
     "utf8",
   );
 
-  assert.match(recommendations, /calculateTermAverage/);
+  assert.match(recommendations, /calculateCumulativeAverage/);
   assert.match(recommendations, /denseRanks/);
   assert.match(recommendations, /generateRecommendation/);
   assert.match(recommendations, /Usar esta sugerencia/);

@@ -1,7 +1,6 @@
 import {
-  calculateTermAverage,
+  calculateCumulativeAverage,
   denseRanks,
-  finalVisible,
   type AcademicArea,
   type AcademicSubject,
   type StudentGrade,
@@ -81,7 +80,7 @@ export function buildMeritRanking(
     );
     return {
       id: enrollment.id,
-      score: calculateTermAverage(term, areas, subjects, studentGrades),
+      score: calculateCumulativeAverage(term, areas, subjects, studentGrades),
     };
   });
   const rankedAverages = averages.filter(
@@ -106,7 +105,7 @@ export function buildMeritRanking(
       );
       return {
         average,
-        averageVisible: finalVisible(average),
+        averageVisible: average,
         complete:
           expectedSubjectIds.size > 0 &&
           recordedGrades === expectedSubjectIds.size,

@@ -371,15 +371,15 @@ Se mostrará con un decimal. Primero se redondea cada P y cada promedio global; 
 
 #### RF-MER-001
 
-El mérito se calculará por grupo y por bimestre usando solamente las notas del bimestre evaluado, no el P acumulado.
+El mérito se calculará por grupo y por bimestre usando las notas acumuladas desde el primer bimestre hasta el bimestre evaluado. Si no hay notas registradas en el bimestre evaluado, no se asigna puesto para ese bimestre.
 
 #### RF-MER-002
 
-El promedio del área para un bimestre será el promedio de las asignaturas con nota en ese bimestre. El promedio final del bimestre será el promedio de las áreas incluidas.
+Para cada bimestre, el P de cada asignatura promediará sus notas registradas hasta ese momento y se redondeará a entero. El promedio global del área se calculará con esos P y se redondeará a entero. El promedio final promediará los globales de las áreas incluidas y se mostrará con un decimal.
 
 #### RF-MER-003
 
-Se utilizará el valor interno sin redondear.
+El puesto se calculará con el promedio final visible; los alumnos con el mismo promedio mostrado compartirán puesto.
 
 #### RF-MER-004
 
@@ -473,7 +473,7 @@ La restauración será transaccional. Restaurar en el mismo grupo exigirá confi
 - **RN-005:** no se elimina información con historial; se utilizan estados y retiro lógico.
 - **RN-006:** la malla es independiente por grupo.
 - **RN-007:** cambiar la malla no elimina notas existentes.
-- **RN-008:** el P y el promedio global se redondean antes de calcular el siguiente nivel; el mérito bimestral conserva precisión interna.
+- **RN-008:** el P y el promedio global se redondean antes de calcular el siguiente nivel; el mérito utiliza el promedio final visible acumulado hasta cada bimestre.
 - **RN-009:** el mérito se calcula por grupo y bimestre.
 - **RN-010:** los retirados quedan fuera de periodos posteriores a su retiro.
 - **RN-011:** cada PDF generado es inmutable.

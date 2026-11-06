@@ -146,3 +146,37 @@ export function calculateTermAverage(
     ),
   );
 }
+
+export function calculateCumulativeAverage(
+  term: 1 | 2 | 3 | 4,
+  areas: readonly AcademicArea[],
+  subjects: readonly AcademicSubject[],
+  grades: readonly StudentGrade[],
+): number | null {
+  const includedAreaIds = new Set(
+    areas
+      .filter((area) => area.active && area.includedInFinal)
+      .map((area) => area.id),
+  );
+  const activeSubjectIds = new Set(
+    subjects
+      .filter((subject) => subject.active && includedAreaIds.has(subject.areaId))
+      .map((subject) => subject.id),
+  );
+  if (
+    !grades.some(
+      (grade) =>
+        grade.term === term &&
+        grade.score !== null &&
+        activeSubjectIds.has(grade.subjectId),
+    )
+  ) {
+    return null;
+  }
+
+  return calculateStudentResult(
+    areas,
+    subjects,
+    grades.filter((grade) => grade.term <= term),
+  ).finalVisible;
+}

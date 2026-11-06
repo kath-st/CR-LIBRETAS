@@ -9,7 +9,7 @@ import {
 } from "react";
 import { Alert, Spinner } from "@/components/ui";
 import {
-  calculateTermAverage,
+  calculateCumulativeAverage,
   denseRanks,
   finalVisible,
   type StudentGrade,
@@ -238,7 +238,7 @@ export function Recommendations() {
           }));
         return {
           id: enrollment.id,
-          score: calculateTermAverage(
+          score: calculateCumulativeAverage(
             currentTerm,
             calculationAreas,
             calculationSubjects,
@@ -500,7 +500,7 @@ export function Recommendations() {
             ) : (
               <>
                 <section
-                  aria-label="Resumen académico del bimestre"
+                  aria-label="Resumen académico acumulado hasta el bimestre"
                   className={styles.academicSnapshot}
                 >
                   <div>
