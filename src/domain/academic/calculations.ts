@@ -98,7 +98,9 @@ export function calculateStudentResult(
       averageAvailable(
         activeSubjects
           .filter((subject) => subject.areaId === area.id)
-          .map((subject) => subjectAverages[subject.id] ?? null),
+          .map((subject) =>
+            visibleInteger(subjectAverages[subject.id] ?? null),
+          ),
       ),
     ]),
   );
@@ -106,7 +108,7 @@ export function calculateStudentResult(
   const finalInternal = averageAvailable(
     activeAreas
       .filter((area) => area.includedInFinal)
-      .map((area) => areaAverages[area.id] ?? null),
+      .map((area) => visibleInteger(areaAverages[area.id] ?? null)),
   );
 
   return {

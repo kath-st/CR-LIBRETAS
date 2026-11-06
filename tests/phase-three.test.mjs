@@ -26,7 +26,7 @@ test("la Fase 3 incluye sus rutas, migración y módulos visibles", async () => 
   await Promise.all(required.map((file) => access(new URL(file, root))));
 });
 
-test("los cálculos usan notas internas y excluyen áreas configuradas", () => {
+test("el final usa áreas redondeadas y excluye áreas configuradas", () => {
   const areas = [
     { active: true, id: "a1", includedInFinal: true },
     { active: true, id: "a2", includedInFinal: false },
@@ -48,8 +48,8 @@ test("los cálculos usan notas internas y excluyen áreas configuradas", () => {
   assert.equal(result.subjectAverages.s1, 5);
   assert.equal(result.areaAverages.a1, 12.5);
   assert.equal(result.areaAverages.a2, 15);
-  assert.equal(result.finalInternal, 12.5);
-  assert.equal(result.finalVisible, 12.5);
+  assert.equal(result.finalInternal, 13);
+  assert.equal(result.finalVisible, 13);
 });
 
 test("el promedio bimestral conserva precisión y cero participa", () => {

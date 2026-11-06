@@ -353,7 +353,7 @@ El P visible es el promedio interno de asignatura redondeado a entero.
 
 #### RF-CAL-003. Área interna
 
-Es el promedio de los P internos de las asignaturas activas que tengan notas. En un área directa equivale al P interno de su asignatura única.
+Es el promedio de los P visibles (redondeados a entero) de las asignaturas activas que tengan notas. En un área directa equivale al P visible de su asignatura única.
 
 #### RF-CAL-004. Promedio global visible
 
@@ -361,11 +361,11 @@ Es el promedio interno del área redondeado a entero.
 
 #### RF-CAL-005. Promedio final interno
 
-Es el promedio de los valores internos de las áreas activas marcadas para participar.
+Es el promedio de los promedios globales visibles (redondeados a entero) de las áreas activas marcadas para participar.
 
 #### RF-CAL-006. Promedio final visible
 
-Se mostrará con un decimal. No se redondearán resultados intermedios.
+Se mostrará con un decimal. Primero se redondea cada P y cada promedio global; después se calcula y se muestra el promedio final.
 
 ### 6.9 Orden de mérito
 
@@ -473,7 +473,7 @@ La restauración será transaccional. Restaurar en el mismo grupo exigirá confi
 - **RN-005:** no se elimina información con historial; se utilizan estados y retiro lógico.
 - **RN-006:** la malla es independiente por grupo.
 - **RN-007:** cambiar la malla no elimina notas existentes.
-- **RN-008:** los cálculos internos conservan precisión y solo se redondea para mostrar.
+- **RN-008:** el P y el promedio global se redondean antes de calcular el siguiente nivel; el mérito bimestral conserva precisión interna.
 - **RN-009:** el mérito se calcula por grupo y bimestre.
 - **RN-010:** los retirados quedan fuera de periodos posteriores a su retiro.
 - **RN-011:** cada PDF generado es inmutable.
@@ -1058,7 +1058,7 @@ El MVP estará completo cuando sea posible:
 8. Configurar una malla diferente por grupo.
 9. Registrar notas de 0 a 20 y dejar notas vacías.
 10. Cerrar la aplicación y recuperar lo guardado.
-11. Calcular promedios sin redondeos intermedios.
+11. Calcular el área con los P redondeados y el final con los promedios globales redondeados.
 12. Calcular mérito por bimestre y resolver empates.
 13. Registrar recomendaciones por bimestre.
 14. Previsualizar una boleta.

@@ -63,8 +63,8 @@ La aplicación utiliza autenticación y políticas de seguridad directamente en
 la base de datos. Cada docente puede acceder únicamente a los grupos que tiene
 asignados, mientras que las funciones administrativas permanecen restringidas.
 
-Las notas son la fuente de los cálculos académicos. Los promedios se generan
-sin redondeos intermedios y cada libreta PDF se conserva como una fotografía
+Las notas son la fuente de los cálculos académicos. El promedio de área usa los P
+redondeados y el promedio final usa los globales redondeados. Cada libreta PDF se conserva como una fotografía
 histórica inmutable del momento en que fue creada.
 
 ## Instalación rápida
