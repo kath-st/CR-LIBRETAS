@@ -1,0 +1,60 @@
+.heading {
+  margin-bottom: 30px;
+}
+
+.heading h1 {
+  margin: 0;
+  color: var(--color-navy-950);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+}
+
+.heading > p:last-child {
+  margin: 13px 0 0;
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--color-orange-700);
+  font-size: 0.73rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.form {
+  display: grid;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.twoColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.switch {
+  margin: 24px 0 0;
+  color: var(--color-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.switch a {
+  color: var(--color-navy-800);
+  font-weight: 800;
+  text-decoration-color: rgba(23, 59, 99, 0.35);
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+  .twoColumns {
+    grid-template-columns: 1fr;
+  }
+}

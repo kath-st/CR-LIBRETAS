@@ -1,0 +1,39 @@
+{
+  "subjectAverages": [
+    {
+      "name": "cuatro bimestres completos",
+      "grades": [11, 13, 15, 17],
+      "internal": 14,
+      "visible": 14
+    },
+    {
+      "name": "NULL no participa",
+      "grades": [10, null, 15, null],
+      "internal": 12.5,
+      "visible": 13
+    },
+    {
+      "name": "cero sí participa",
+      "grades": [0, 10, null, null],
+      "internal": 5,
+      "visible": 5
+    },
+    {
+      "name": "sin notas",
+      "grades": [null, null, null, null],
+      "internal": null,
+      "visible": null
+    }
+  ],
+  "finalAverage": {
+    "areaInternalValues": [12.5, 15.25, 18],
+    "internal": 15.25,
+    "visible": 15.3
+  },
+  "denseRanking": [
+    { "id": "alumna-a", "score": 18.25, "rank": 1 },
+    { "id": "alumna-b", "score": 17.5, "rank": 2 },
+    { "id": "alumna-c", "score": 17.5, "rank": 2 },
+    { "id": "alumna-d", "score": 16, "rank": 3 }
+  ]
+}

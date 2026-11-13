@@ -1,0 +1,14 @@
+.state {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.state > * {
+  max-width: 34rem;
+  width: 100%;
+}
