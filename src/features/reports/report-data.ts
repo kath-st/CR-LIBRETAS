@@ -10,6 +10,7 @@ import {
 import { eligibleForTerm } from "@/domain/academic/merit-ranking";
 import { bearerSubject, isBearerAuthError } from "@/lib/auth/bearer";
 import { createBearerClient } from "@/lib/supabase/server";
+import { loadGroupGrades } from "@/lib/supabase/group-grades";
 import {
   REPORT_TERMS,
   type ReportBatchSnapshot,
@@ -127,7 +128,7 @@ export async function loadReportSnapshot(
     enrollmentResult,
     areaResult,
     subjectResult,
-    gradeResult,
+    storedGrades,
     recommendationResult,
   ] = await Promise.all([
     supabase
@@ -160,10 +161,7 @@ export async function loadReportSnapshot(
       .eq("group_id", groupId)
       .eq("active", true)
       .order("position"),
-    supabase
-      .from("grades")
-      .select("enrollment_id, group_subject_id, term, score")
-      .eq("group_id", groupId),
+    loadGroupGrades(supabase, groupId),
     supabase
       .from("recommendations")
       .select("enrollment_id, term, text")
@@ -176,7 +174,6 @@ export async function loadReportSnapshot(
     errorMessage("Matrículas", enrollmentResult),
     errorMessage("Áreas", areaResult),
     errorMessage("Asignaturas", subjectResult),
-    errorMessage("Notas", gradeResult),
     errorMessage("Recomendaciones", recommendationResult),
   ].find(Boolean);
   if (firstError) throw new ReportDataError(firstError, 502);
@@ -197,7 +194,7 @@ export async function loadReportSnapshot(
     .sort((a, b) => studentName(a).localeCompare(studentName(b), "es"));
   const areas = (areaResult.data ?? []) as AreaRow[];
   const subjects = (subjectResult.data ?? []) as SubjectRow[];
-  const grades = (gradeResult.data ?? []) as GradeRow[];
+  const grades = storedGrades as GradeRow[];
   const recommendations =
     (recommendationResult.data ?? []) as RecommendationRow[];
 

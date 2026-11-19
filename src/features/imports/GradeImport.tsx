@@ -85,6 +85,7 @@ export function GradeImport({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [messageTone, setMessageTone] = useState<"success" | "warning">("success");
 
   const displayedRows = useMemo(() => preview?.rows.slice(0, 500) ?? [], [preview]);
 
@@ -212,8 +213,12 @@ export function GradeImport({
       setPreview(null);
       setSelected(new Set());
       setFileName("");
+      setMessageTone(result.result.affected_rows === 0 ? "warning" : "success");
       setMessage(
-        `${result.result.requested_changes} cambio(s) procesados en ${result.summary.groups} grupo(s). ` +
+        `${result.result.affected_rows} fila(s) de notas modificadas de ${result.result.requested_changes} cambio(s) solicitados en ${result.summary.groups} grupo(s). ` +
+          (result.result.affected_rows === 0 && policy === "fill_empty"
+            ? "Las celdas ya ocupadas se conservaron. "
+            : "") +
           `${result.result.students_created} alumno(s) nuevo(s) y ${result.result.backups_created} respaldo(s) creados.`,
       );
     } catch (cause) {
@@ -323,7 +328,11 @@ export function GradeImport({
           antes de aplicar el archivo. Se generará un respaldo automático.
         </p>
       ) : null}
-      {message ? <p className={styles.notice}>{message}</p> : null}
+      {message ? (
+        <p className={messageTone === "warning" ? styles.warning : styles.notice}>
+          {message}
+        </p>
+      ) : null}
       {error ? (
         <Alert title="No se pudo importar" tone="danger">
           <p>{error}</p>
@@ -361,6 +370,9 @@ export function GradeImport({
             </span>
             <span className={styles.duplicateCount}>
               {preview.summary.overwrites} reemplazos
+            </span>
+            <span className={styles.duplicateCount}>
+              {preview.summary.skipped} celdas ocupadas omitidas
             </span>
             <span className={styles.errorCount}>{preview.summary.errors} con error</span>
           </div>

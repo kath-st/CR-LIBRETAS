@@ -58,6 +58,9 @@ async function loadGrades(
       .from("grades")
       .select("enrollment_id, group_subject_id, term, score")
       .in("group_id", groupIds)
+      .order("enrollment_id")
+      .order("group_subject_id")
+      .order("term")
       .range(offset, offset + 999);
     if (result.error) throw new Error(result.error.message);
     const page = (result.data ?? []) as Grade[];

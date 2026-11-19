@@ -21,6 +21,7 @@ import {
 } from "@/domain/academic/recommendation-generator";
 import { useGroupWorkspace } from "@/features/groups/GroupWorkspace";
 import { createClient } from "@/lib/supabase/client";
+import { loadGroupGrades } from "@/lib/supabase/group-grades";
 import styles from "./Academic.module.css";
 import { recommendationSchema } from "./schemas";
 
@@ -110,7 +111,7 @@ export function Recommendations() {
       recommendationResult,
       areaResult,
       subjectResult,
-      gradeResult,
+      storedGrades,
     ] = await Promise.all([
       supabase
         .from("enrollments")
@@ -132,17 +133,13 @@ export function Recommendations() {
         .select("id, group_area_id, active")
         .eq("group_id", group.id)
         .eq("active", true),
-      supabase
-        .from("grades")
-        .select("enrollment_id, group_subject_id, term, score")
-        .eq("group_id", group.id),
+      loadGroupGrades(supabase, group.id),
     ]);
     const queryError =
       enrollmentResult.error ??
       recommendationResult.error ??
       areaResult.error ??
-      subjectResult.error ??
-      gradeResult.error;
+      subjectResult.error;
     if (queryError) throw new Error(queryError.message);
 
     const enrollmentRows: Enrollment[] = (enrollmentResult.data ?? [])
@@ -169,7 +166,7 @@ export function Recommendations() {
     setEnrollments(enrollmentRows);
     setAreas((areaResult.data ?? []) as Area[]);
     setSubjects((subjectResult.data ?? []) as Subject[]);
-    setGrades((gradeResult.data ?? []) as GradeRow[]);
+    setGrades(storedGrades as GradeRow[]);
     setValues(stored);
     setSelectedEnrollmentId((current) =>
       enrollmentRows.some((enrollment) => enrollment.id === current)

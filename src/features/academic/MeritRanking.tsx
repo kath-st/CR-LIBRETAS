@@ -13,6 +13,7 @@ import type {
 } from "@/domain/academic/calculations";
 import { useGroupWorkspace } from "@/features/groups/GroupWorkspace";
 import { createClient } from "@/lib/supabase/client";
+import { loadGroupGrades } from "@/lib/supabase/group-grades";
 import styles from "./Academic.module.css";
 
 type EnrollmentRow = {
@@ -66,7 +67,7 @@ export function MeritRanking() {
     setLoading(true);
     setError("");
     const supabase = createClient();
-    const [enrollmentResult, areaResult, subjectResult, gradeResult] =
+    const [enrollmentResult, areaResult, subjectResult, storedGrades] =
       await Promise.all([
         supabase
           .from("enrollments")
@@ -84,17 +85,12 @@ export function MeritRanking() {
           .select("id, group_area_id, active")
           .eq("group_id", group.id)
           .eq("active", true),
-        supabase
-          .from("grades")
-          .select("enrollment_id, group_subject_id, term, score")
-          .eq("group_id", group.id)
-          .lte("term", term),
+        loadGroupGrades(supabase, group.id, term),
       ]);
     const queryError =
       enrollmentResult.error ??
       areaResult.error ??
-      subjectResult.error ??
-      gradeResult.error;
+      subjectResult.error;
     if (queryError) throw new Error(queryError.message);
     if (version !== requestVersion.current) return;
 
@@ -124,7 +120,7 @@ export function MeritRanking() {
       })),
     );
     setGrades(
-      ((gradeResult.data ?? []) as GradeRow[]).map((grade) => ({
+      (storedGrades as GradeRow[]).map((grade) => ({
         enrollmentId: grade.enrollment_id,
         score: grade.score,
         subjectId: grade.group_subject_id,

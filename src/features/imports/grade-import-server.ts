@@ -147,6 +147,10 @@ async function loadStoredGrades(client: SupabaseClient, groupIds: string[]) {
       .from("grades")
       .select("group_id, enrollment_id, group_subject_id, term, score")
       .in("group_id", groupIds)
+      .order("group_id")
+      .order("enrollment_id")
+      .order("group_subject_id")
+      .order("term")
       .range(offset, offset + pageSize - 1);
     if (result.error) throw new Error(result.error.message);
     const page = (result.data ?? []) as StoredGrade[];

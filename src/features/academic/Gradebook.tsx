@@ -19,6 +19,7 @@ import { SaveVersionTracker } from "@/domain/academic/autosave";
 import { useGroupWorkspace } from "@/features/groups/GroupWorkspace";
 import { GradeImport } from "@/features/imports/GradeImport";
 import { createClient } from "@/lib/supabase/client";
+import { loadGroupGrades } from "@/lib/supabase/group-grades";
 import styles from "./Academic.module.css";
 import { gradeInputSchema } from "./schemas";
 
@@ -44,13 +45,6 @@ type Subject = {
   id: string;
   name: string;
   position: number;
-};
-
-type GradeRow = {
-  enrollment_id: string;
-  group_subject_id: string;
-  score: number | null;
-  term: 1 | 2 | 3 | 4;
 };
 
 type SaveState = "guardando" | "guardado" | "error";
@@ -129,7 +123,7 @@ export function Gradebook() {
     } = await supabase.auth.getSession();
     if (!session) throw new Error("La sesión expiró.");
 
-    const [enrollmentResult, areaResult, subjectResult, gradeResult] =
+    const [enrollmentResult, areaResult, subjectResult, storedGrades] =
       await Promise.all([
         supabase
           .from("enrollments")
@@ -150,17 +144,13 @@ export function Gradebook() {
           .eq("group_id", group.id)
           .eq("active", true)
           .order("position"),
-        supabase
-          .from("grades")
-          .select("enrollment_id, group_subject_id, term, score")
-          .eq("group_id", group.id),
+        loadGroupGrades(supabase, group.id),
       ]);
 
     const queryError =
       enrollmentResult.error ??
       areaResult.error ??
-      subjectResult.error ??
-      gradeResult.error;
+      subjectResult.error;
     if (queryError) throw new Error(queryError.message);
 
     const enrollmentRows: Enrollment[] = (enrollmentResult.data ?? [])
@@ -176,7 +166,6 @@ export function Gradebook() {
       );
     const areaRows = (areaResult.data ?? []) as Area[];
     const subjectRows = (subjectResult.data ?? []) as Subject[];
-    const storedGrades = (gradeResult.data ?? []) as GradeRow[];
     const nextValues: Record<string, number | null> = {};
     const nextDrafts: Record<string, string> = {};
     for (const grade of storedGrades) {
